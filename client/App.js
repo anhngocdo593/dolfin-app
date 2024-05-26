@@ -9,6 +9,7 @@ import Home from './screens/others/Home';
 import Splash from "./screens/login/Splash"
 import Login from "./screens/login/Login"
 import Register from "./screens/register/Register"
+import AddScreen from './screens/Adding/AddScreen';
 const Stack = createStackNavigator();
 export default function App() {
   
@@ -22,6 +23,7 @@ export default function App() {
         <Stack.Screen name="O2" component={Onboarding2} options={{ headerShown: false }} />
         <Stack.Screen name="O3" component={Onboarding3} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+        <Stack.Screen name="Add" component={AddScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
