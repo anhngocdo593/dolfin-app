@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 
-const ReturnButton = ({ onPress, label = '< Quay lại' }) => {
+const ReturnButton = ({ onPress, label = '<' }) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={onPress} style={styles.button}>
@@ -13,20 +13,22 @@ const ReturnButton = ({ onPress, label = '< Quay lại' }) => {
 
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute',
-        top: 20,
-        left: 20,
-    },
+        flex: 1,
+        width:'100%',
+        borderColor: '#cccccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        overflow: 'hidden',
+      },
     button: {
-        position: 'absolute',
+    position: 'absolute',
         top: 10,
         left: 10,
         padding: 10,
-        backgroundColor: '#007bff',
-        borderRadius: 5,
+        borderRadius: 10,
       },
     buttonText: {
-        color: '#FFFFFF',
+        color: '#333333',
         fontSize: 16,
     },
 });

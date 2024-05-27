@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, TextInput } from 'react-native';
 const TextBox = ({ value, onChangeText }) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Ghi chú</Text>
+            <Text style={styles.label}>Notes</Text>
             <TextInput
                 style={styles.textInput}
                 value={value}
@@ -18,14 +18,16 @@ const TextBox = ({ value, onChangeText }) => {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 20,
+        flex: 1,
+        width: '95%',
     },
     label: {
+        height: 'auto',
         fontSize: 18,
-        marginBottom: 10,
     },
     textInput: {
-        height: 50,
+        height: 100,
+        width: '100%',
         borderColor: '#cccccc',
         borderWidth: 1,
         borderRadius: 5,
