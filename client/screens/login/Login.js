@@ -22,7 +22,7 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    navigation.navigate("AccountSetting");
+    navigation.navigate("O1");
   };
 
   return (
