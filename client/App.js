@@ -12,6 +12,7 @@ import Register from "./screens/register/Register";
 import ResetPass from "./screens/login/ResetPass";
 import AccountSetting from "./screens/account/AccountSetting";
 import AccountEdit from "./screens/account/AccountEdit";
+import AddScreen from "./screens/Adding/AddScreen";
 const Stack = createStackNavigator();
 export default function App() {
   return (
@@ -20,6 +21,11 @@ export default function App() {
         <Stack.Screen
           name="Splash"
           component={Splash}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AddScreen"
+          component={AddScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
