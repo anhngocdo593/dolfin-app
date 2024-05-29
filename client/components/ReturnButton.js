@@ -1,33 +1,26 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text ,Image} from 'react-native';
 
-const ReturnButton = ({ onPress, label = '< Quay lại' }) => {
+const ReturnButton = ({ onPress, label = '<' }) => {
     return (
-        <View style={styles.container}>
             <TouchableOpacity onPress={onPress} style={styles.button}>
-                <Text style={styles.buttonText}>{label}</Text>
+            <Image style = {styles.image} source={require('../assets/ReturnButton.png')}/>
             </TouchableOpacity>
-        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute',
-        top: 20,
-        left: 20,
-    },
-    button: {
-        position: 'absolute',
-        top: 10,
-        left: 10,
-        padding: 10,
-        backgroundColor: '#007bff',
-        borderRadius: 5,
+        flex: 1,
+        width:'100%',
       },
-    buttonText: {
-        color: '#FFFFFF',
-        fontSize: 16,
+    button: {
+        padding: 10,
+        borderRadius: 10,
+      },
+    image: {
+        width:25,
+        height:25,
     },
 });
 

@@ -48,7 +48,7 @@ const FooterS = () => {
             backgroundColor: "#7DB6DF",
             borderRadius: "50px",
           }}
-          onPress={() => navigation.navigate("Add")}
+          onPress={() => navigation.navigate("AddScreen")}
         >
           <FontAwesome5 name="plus" size={20} color="white" />
         </TouchableOpacity>
