@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import Footer from "../../components/Footer";
+import FooterS from "../../components/FooterS";
 import { useNavigation } from "@react-navigation/native";
 const AccountSetting = (props) => {
   const navigation = useNavigation();
@@ -84,7 +84,7 @@ const AccountSetting = (props) => {
           <Text className="text-blue-600 text-lg">Đăng xuất</Text>
         </TouchableOpacity>
       </View>
-      <Footer />
+      <FooterS />
     </View>
   );
 };
