@@ -1,7 +1,7 @@
 // DaySelectComponent.js
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import RNPickerSelect from 'react-native-picker-select';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const months = [
@@ -9,51 +9,83 @@ const months = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+const getDaysInMonth = (month, year) => {
+  return new Date(year, month, 0).getDate();
+};
+
+const generateDays = (month, year) => {
+  const daysInMonth = getDaysInMonth(month, year);
+  return Array.from({ length: daysInMonth }, (_, i) => ({
+    label: (i + 1).toString(),
+    value: i + 1,
+  }));
+};
+
+const generateMonths = () => {
+  return months.map((month, index) => ({
+    label: month,
+    value: index,
+  }));
+};
+
+const generateYears = (startYear, endYear) => {
+  return Array.from({ length: endYear - startYear + 1 }, (_, i) => ({
+    label: (startYear + i).toString(),
+    value: startYear + i,
+  }));
+};
+
 const DaySelectComponent = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const today = new Date();
+  const [selectedDay, setSelectedDay] = useState(today.getDate());
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
+  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
-  const formatDate = (date) => {
+  const handleDayChange = (value) => {
+    setSelectedDay(value);
+  };
+
+  const handleMonthChange = (value) => {
+    setSelectedMonth(value);
+  };
+
+  const handleYearChange = (value) => {
+    setSelectedYear(value);
+  };
+
+  const formatDate = (day, month, year) => {
+    const date = new Date(year, month, day);
     const dayOfWeek = daysOfWeek[date.getDay()];
-    const dayOfMonth = date.getDate();
-    const month = months[date.getMonth()];
-    return `${dayOfWeek}, ${dayOfMonth} ${month}`;
-  };
-
-  const handleDateChange = (event, date) => {
-    setShowDatePicker(Platform.OS === 'ios');
-    if (date) {
-      setSelectedDate(date);
-    }
-  };
-
-  const handleDateTextPress = () => {
-    setShowDatePicker(true);
-  };
-
-  const handleDonePress = () => {
-    setShowDatePicker(false);
+    return `${dayOfWeek}, ${day} ${months[month]} ${year}`;
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Select Date:</Text>
-      <Text style={styles.dateText} onPress={handleDateTextPress}>{formatDate(selectedDate)}</Text>
-      {showDatePicker && (
-        <View>
-          {Platform.OS === 'ios' && (
-            <View style={styles.doneButtonContainer}>
-              <Text style={styles.doneButton} onPress={handleDonePress}>Done</Text>
-            </View>
-          )}
-          <DateTimePicker
-            value={selectedDate}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={handleDateChange}
-          />
-        </View>
-      )}
+      <Text style={styles.label}>Ngày</Text>
+      <View style={styles.pickerContainer}>
+        <RNPickerSelect
+          onValueChange={handleDayChange}
+          items={generateDays(selectedMonth + 1, selectedYear)}
+          value={selectedDay}
+          style={pickerSelectStyles}
+          placeholder={{}}
+        />
+        <RNPickerSelect
+          onValueChange={handleMonthChange}
+          items={generateMonths()}
+          value={selectedMonth}
+          style={pickerSelectStyles}
+          placeholder={{}}
+        />
+        <RNPickerSelect
+          onValueChange={handleYearChange}
+          items={generateYears(1900, 2100)}
+          value={selectedYear}
+          style={pickerSelectStyles}
+          placeholder={{}}
+        />
+      </View>
+      {/* <Text style={styles.dateText}>{formatDate(selectedDay, selectedMonth, selectedYear)}</Text> */}
     </View>
   );
 };
@@ -62,25 +94,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    alignItems: 'left',
   },
   label: {
-    fontSize: 24,
-    marginBottom: 10,
+    fontSize: 20,
+    color: 'gray',
+    marginBottom: 5,
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dateText: {
     fontSize: 20,
     marginTop: 10,
   },
-  doneButtonContainer: {
-    alignItems: 'flex-end',
-    paddingRight: 20,
-    paddingBottom: 10,
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    color: 'black',
+    paddingRight: 10, // to ensure the text is never behind the icon
   },
-  doneButton: {
-    fontSize: 18,
-    color: '#007AFF',
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    color: 'black',
+    paddingRight: 10, // to ensure the text is never behind the icon
   },
 });
 

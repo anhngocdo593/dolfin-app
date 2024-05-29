@@ -12,7 +12,7 @@ const TimeSelectComponent = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Select Time:</Text>
+      <Text style={styles.label}>Thời gian</Text>
       <View style={styles.pickerContainer}>
         <RNPickerSelect
           style={pickerSelectStyles}
@@ -30,9 +30,9 @@ const TimeSelectComponent = () => {
           placeholder={{}}
         />
       </View>
-      <Text style={styles.selectedTime}>
+      {/* <Text style={styles.selectedTime}>
         Selected Time: {selectedHour.toString().padStart(2, '0')}:{selectedMinute.toString().padStart(2, '0')}
-      </Text>
+      </Text> */}
     </View>
   );
 };
@@ -41,47 +41,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
+    alignItems: 'flex-start',
   },
   label: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 20,
+    color: 'gray',
+    marginBottom: 5,
   },
   pickerContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   separator: {
-    fontSize: 24,
+    fontSize: 16,
     marginHorizontal: 10,
+    paddingVertical: 5,
   },
   selectedTime: {
     marginTop: 20,
-    fontSize: 24,
+    fontSize: 16,
   },
 });
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
+    fontSize: 16,
     color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingVertical: 5,
+    paddingHorizontal: 5,
   },
   inputAndroid: {
-    fontSize: 24,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
+    fontSize: 16,
     color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingVertical: 5,
+    paddingHorizontal: 5,
   },
 });
 

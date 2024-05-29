@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Text, TextInput } from 'react-native';
 
-const TextBox = ({ value, onChangeText }) => {
+const TextBox = ({ value, label, onChangeText }) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Notes</Text>
+            <Text style={styles.label}>{label}</Text>
             <TextInput
                 style={styles.textInput}
                 value={value}
@@ -23,15 +23,17 @@ const styles = StyleSheet.create({
     },
     label: {
         height: 'auto',
-        fontSize: 18,
+        color:'gray',
+        fontSize: 20,
     },
     textInput: {
-        height: 100,
+        paddingTop: 5,
+        height: 30,
         width: '100%',
-        borderColor: '#cccccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        padding: 10,
+        // borderColor: '#cccccc',
+        // borderWidth: 1,
+        // borderRadius: 5,
+        // padding: 10,
         textAlignVertical: 'top', // Ensures the text starts from the top when multiline is true
     },
 });
