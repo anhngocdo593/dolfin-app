@@ -60,7 +60,7 @@ const FooterS = () => {
         }}
         onPress={() => navigation.navigate("")}
       >
-        <FontAwesome name="history" size={24} color="gray" />
+        <FontAwesome name="pie-chart" size={24} color="gray" />
       </TouchableOpacity>
       <TouchableOpacity
         style={{

@@ -33,12 +33,7 @@ const AccountEdit = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Tên</Text>
-            <TextInput
-              className="flex-1 text-gray-800"
-              placeholder="Sy"
-              value={lastName}
-              onChangeText={setLastName}
-            />
+            <Text className="text-gray-800">{props.lastName}Sy</Text>
           </View>
 
           <View className="flex-row items-center border-b border-gray-200 pb-2 mb-2">
@@ -49,12 +44,7 @@ const AccountEdit = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Năm sinh</Text>
-            <TextInput
-              className="flex-1 text-gray-800"
-              placeholder="Nhập năm sinh"
-              value={dob}
-              onChangeText={setDob}
-            />
+            <Text className="text-gray-800">{props.DOB} 2003</Text>
           </View>
 
           <View className="flex-row items-center border-b border-gray-200 pb-2 mb-2">
@@ -65,12 +55,7 @@ const AccountEdit = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Nghề nghiệp</Text>
-            <TextInput
-              className="flex-1 text-gray-800"
-              placeholder="Nhập nghề nghiệp"
-              value={job}
-              onChangeText={setJob}
-            />
+            <Text className="text-gray-800">Sinh viên</Text>
           </View>
 
           <View className="flex-row items-center pb-2">
