@@ -5,7 +5,7 @@ import ReturnButton from '../../components/ReturnButton';
 import TextBox from '../../components/TextBox';
 import TimeSelectComponent from '../../components/TimeSelect';
 import DaySelectComponent from '../../components/DaySelect';
-export default function AddScreen({navigation})
+export default function AddDetail({ navigation})
 {
     const [notes, setNotes] = useState('');
     const [submenus, setSubmenus] = useState('Chi');
@@ -15,14 +15,14 @@ export default function AddScreen({navigation})
     const button1Ref = useRef(null);
     const button2Ref = useRef(null);
     const images = {
-        'food': require('../../assets/food.png'),
-        'transport': require('../../assets/transport.png'),
-        'edu': require('../../assets/edu.png'),
-        'clothes': require('../../assets/clothes.png'),
+        'Ăn uống': require('../../assets/Ăn uống.png'),
+        'Di chuyển': require('../../assets/Di chuyển.png'),
+        'Giáo dục': require('../../assets/Giáo dục.png'),
+        'Quần áo': require('../../assets/Quần áo.png'),
         // Add all other items similarly
       };
-    const menu1Items = ['food', 'transport', 'edu', 'clothes'];
-    const menu2Items = ['food', 'transport', 'edu', 'clothes'];
+    const menu1Items = ['Ăn uống', 'Di chuyển', 'Giáo dục', 'Quần áo'];
+    const menu2Items = ['Option A', 'Option B', 'Option C'];
     const menuItems = submenus === 'Chi' ? menu1Items : menu2Items;
     const handleReturnPress = () => 
     {
@@ -44,6 +44,12 @@ export default function AddScreen({navigation})
       console.log(`Selected: ${item}`);
       setIsMenu1Visible(false);
       setIsMenu2Visible(false);
+        navigation.navigate('AddDetail',
+            {
+                itemName: item,
+                others:'others'
+            }
+        )
     };
     return(
         <ImageBackground style = {styles.imageBackground} source={require('../../assets/bg.png')}>
