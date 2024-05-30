@@ -16,25 +16,44 @@ import ReturnButton from "../../components/ReturnButton";
 import TextBox from "../../components/TextBox";
 import TimeSelectComponent from "../../components/TimeSelect";
 import DaySelectComponent from "../../components/DaySelect";
-export default function AddScreen() {
+import NumberInput from "../../components/NumberInput";
+import CheckBox from "../../components/CheckBox";
+export default function AddScreen({ navigation }) {
   const [notes, setNotes] = useState("");
   const [submenus, setSubmenus] = useState("Chi");
-  const [selectedButton, setSelectedButton] = useState(null);
-  const [isMenu1Visible, setIsMenu1Visible] = useState(false);
+  const [isMenu1Visible, setIsMenu1Visible] = useState(true);
   const [isMenu2Visible, setIsMenu2Visible] = useState(false);
-  const button1Ref = useRef(null);
-  const button2Ref = useRef(null);
+  const [isItemSelected, setIsItemSelected] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const images = {
     "Ăn uống": require("../../assets/food.png"),
     "Di chuyển": require("../../assets/transport.png"),
     "Giáo dục": require("../../assets/edu.png"),
     "Quần áo": require("../../assets/clothes.png"),
+    "Làm đẹp": require("../../assets/beauty.png"),
+    "Sở thích": require("../../assets/entertaining.png"),
+    "Sự kiện": require("../../assets/event.png"),
     // Add all other items similarly
   };
-  const menu1Items = ["Ăn uống", "Di chuyển", "Giáo dục", "Quần áo"];
-  const menu2Items = ["Option A", "Option B", "Option C"];
+  const menu1Items = [
+    "Ăn uống",
+    "Di chuyển",
+    "Giáo dục",
+    "Quần áo",
+    "Làm đẹp",
+    "Sở thích",
+    "Sự kiện",
+  ];
+  const menu2Items = [
+    "Ăn uống",
+    "Di chuyển",
+    "Giáo dục",
+    "Quần áo",
+    "Làm đẹp",
+    "Sở thích",
+    "Sự kiện",
+  ];
   const menuItems = submenus === "Chi" ? menu1Items : menu2Items;
-  const navigation = useNavigation();
   const handleReturnPress = () => {
     navigation.navigate("Home");
   };
@@ -42,16 +61,32 @@ export default function AddScreen() {
     setSubmenus("Chi");
     setIsMenu1Visible(true);
     setIsMenu2Visible(false);
+    setIsItemSelected(false);
   };
   const handleThuPress = () => {
     setSubmenus("Thu");
     setIsMenu2Visible(true);
     setIsMenu1Visible(false);
+    setIsItemSelected(false);
   };
   const handleMenuItemPress = (item) => {
     console.log(`Selected: ${item}`);
     setIsMenu1Visible(false);
     setIsMenu2Visible(false);
+    setIsItemSelected(true);
+    setSelectedItem(item);
+    console.log(isItemSelected);
+  };
+  const handleSelectedItemPress = (item) => {
+    console.log(`Selected: ${item}`);
+  };
+  const handleCancelButtonPress = (item) => {
+    console.log(`canceled`);
+    setIsItemSelected(false);
+    setSelectedItem(null);
+  };
+  const handleSaveButtonPress = (item) => {
+    console.log(`Saving`);
   };
   return (
     <ImageBackground
@@ -72,6 +107,10 @@ export default function AddScreen() {
           <SafeAreaView style={styles.containerDay}>
             <DaySelectComponent />
           </SafeAreaView>
+          <SafeAreaView style={styles.containerDay}>
+            <CheckBox label="Bật thông báo" />
+          </SafeAreaView>
+
           <View style={styles.container}>
             <View style={styles.rectangle} />
           </View>
@@ -103,9 +142,10 @@ export default function AddScreen() {
 
           {isMenu1Visible && (
             <View style={[styles.dropdown]}>
-              {menu1Items.map((item) => (
+              {menu1Items.map((item, index) => (
                 <TouchableOpacity
                   style={{ flexDirection: "row" }}
+                  key={index}
                   onPress={() => handleMenuItemPress(item)}
                 >
                   <Image style={styles.image} source={images[item]} />
@@ -116,9 +156,10 @@ export default function AddScreen() {
           )}
           {isMenu2Visible && (
             <View style={[styles.dropdown]}>
-              {menu2Items.map((item) => (
+              {menu2Items.map((item, index) => (
                 <TouchableOpacity
                   style={{ flexDirection: "row" }}
+                  key={index}
                   onPress={() => handleMenuItemPress(item)}
                 >
                   <Image style={styles.image} source={images[item]} />
@@ -127,8 +168,64 @@ export default function AddScreen() {
               ))}
             </View>
           )}
+          {isItemSelected && (
+            <View style={[styles.dropdown]}>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                onPress={handleSelectedItemPress(selectedItem)}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <Image style={styles.image} source={images[selectedItem]} />
+                  <Text style={styles.dropdownItem}>{selectedItem}</Text>
+                </View>
+                <NumberInput style={styles.numberInput} />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </ScrollView>
+      {isItemSelected && (
+        <View style={styles.bottomScreen}>
+          <TouchableOpacity
+            style={styles.saveButtonContainer}
+            onPress={() => {
+              handleCancelButtonPress();
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#FF5656",
+                paddingHorizontal: 60,
+                paddingVertical: 20,
+                borderRadius: 10,
+              }}
+            >
+              <Text style={styles.saveButtonText}>Cancel</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.saveButtonContainer}
+            onPress={() => {
+              handleSaveButtonPress();
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#2DE55C",
+                paddingHorizontal: 60,
+                paddingVertical: 20,
+                borderRadius: 10,
+              }}
+            >
+              <Text style={styles.saveButtonText}>Save</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
     </ImageBackground>
   );
 }
@@ -206,14 +303,28 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   dropdown: {
-    backgroundColor: "white",
+    backgroundColor: "#E9F5FD",
     padding: 10,
     borderRadius: 5,
     width: "100%",
+    gap: 10,
   },
   dropdownItem: {
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    alignSelf: "center",
+  },
+  numberInput: {},
+  saveButtonContainer: {
+    bottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "white",
+  },
+  bottomScreen: {
+    flexDirection: "row",
+    marginHorizontal: 20,
+    justifyContent: "space-evenly",
   },
 });

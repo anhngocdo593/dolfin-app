@@ -11,7 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function Onboarding3() {
   const navigation = useNavigation();
   const handlePress = () => {
-    navigation.navigate("AccountSetting");
+    navigation.navigate("DefaultPage");
   };
   return (
     <ImageBackground source={require("../../assets/bg.png")}>

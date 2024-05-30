@@ -1,75 +1,74 @@
 import React from "react";
-import { View, Text, FlatList, Image, StyleSheet } from "react-native";
+import { SafeAreaView, View, Text, FlatList, Image } from "react-native";
 
-const icons = {
+const categoryImages = {
   food: require("../assets/food.png"),
   transport: require("../assets/transport.png"),
+  // Thêm các ánh xạ khác tương ứng với các category khác
 };
 
-const ExpenseList = ({ data }) => {
+const ExpenseList = ({ props }) => {
   return (
-    <FlatList
-      style={styles.container}
-      data={data}
-      keyExtractor={(item) => item._id.toString()}
-      renderItem={({ item }) => (
-        <View style={styles.itemContainer}>
-          <View style={styles.iconContainer}>
-            <Image source={icons[item.category]} style={styles.icon} />
-          </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.category}>{item.category}</Text>
-            <Text style={styles.amount}>{item.amount}</Text>
-          </View>
-        </View>
-      )}
-    />
+    <SafeAreaView style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
+      <Text
+        style={{
+          alignSelf: "center",
+          justifyContent: "center",
+          color: "black",
+          fontWeight: "bold",
+          marginBottom: 15,
+          fontSize: 20,
+        }}
+      >
+        Expenses List
+      </Text>
+      <FlatList
+        style={{ flex: 1 }}
+        data={props}
+        keyExtractor={(item) => item._id.toString()}
+        renderItem={({ item }) => (
+          <SafeAreaView
+            style={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                maxWidth: "auto",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={
+                  categoryImages[item.category] || require("../assets/fish.png")
+                }
+                style={{ width: 50, height: 50, marginRight: 20 }}
+              />
+              <Text
+                style={{
+                  color: "black",
+                  fontWeight: "bold",
+                  textTransform: "capitalize",
+                }}
+              >
+                {item.category}
+              </Text>
+            </View>
+            <Text style={{ flex: 1, color: "black", fontWeight: "bold" }}>
+              {item.percent}50%
+            </Text>
+            <Text style={{ color: "black", fontWeight: "bold" }}>
+              {item.amount}
+            </Text>
+          </SafeAreaView>
+        )}
+      />
+    </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  itemContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-    padding: 16,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#e0e0e0",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  icon: {
-    width: 24,
-    height: 24,
-  },
-  textContainer: {
-    flex: 1,
-    marginLeft: 16,
-  },
-  category: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  amount: {
-    fontSize: 14,
-    color: "#888",
-  },
-});
 
 export default ExpenseList;

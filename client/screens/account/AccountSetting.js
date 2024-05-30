@@ -81,7 +81,7 @@ const AccountSetting = (props) => {
             navigation.navigate("Splash");
           }}
         >
-          <Text className="text-blue-600 text-lg">Đăng xuất</Text>
+          <Text className="text-red-600 text-lg">Đăng xuất</Text>
         </TouchableOpacity>
       </View>
       <FooterS />
