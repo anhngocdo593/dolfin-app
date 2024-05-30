@@ -25,10 +25,10 @@ export default function AddScreen() {
   const button1Ref = useRef(null);
   const button2Ref = useRef(null);
   const images = {
-    "Ăn uống": require("../../assets/Ăn uống.png"),
-    "Di chuyển": require("../../assets/Di chuyển.png"),
-    "Giáo dục": require("../../assets/Giáo dục.png"),
-    "Quần áo": require("../../assets/Quần áo.png"),
+    "Ăn uống": require("../../assets/food.png"),
+    "Di chuyển": require("../../assets/transport.png"),
+    "Giáo dục": require("../../assets/edu.png"),
+    "Quần áo": require("../../assets/clothes.png"),
     // Add all other items similarly
   };
   const menu1Items = ["Ăn uống", "Di chuyển", "Giáo dục", "Quần áo"];
