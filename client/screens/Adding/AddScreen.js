@@ -55,7 +55,7 @@ export default function AddScreen({ navigation }) {
   ];
   const menuItems = submenus === "Chi" ? menu1Items : menu2Items;
   const handleReturnPress = () => {
-    navigation.navigate("Home");
+    navigation.navigate("DefaultPage");
   };
   const handleChiPress = () => {
     setSubmenus("Chi");

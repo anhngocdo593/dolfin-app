@@ -1,13 +1,13 @@
-import React from "react";
-import { SafeAreaView, View, Text, FlatList, Image } from "react-native";
+import React, { useState } from "react";
+import { SafeAreaView, View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 
 const categoryImages = {
-  food: require("../assets/food.png"),
-  transport: require("../assets/transport.png"),
+  'food': require("../assets/food.png"),
+  'transport': require("../assets/transport.png"),
   // Thêm các ánh xạ khác tương ứng với các category khác
 };
 
-const ExpenseList = ({ props }) => {
+const ExpenseList = ({ props, handlePressItemEdit, popup}) => {
   return (
     <SafeAreaView style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
       <Text
@@ -27,12 +27,13 @@ const ExpenseList = ({ props }) => {
         data={props}
         keyExtractor={(item) => item._id.toString()}
         renderItem={({ item }) => (
-          <SafeAreaView
+          <TouchableOpacity
             style={{
               alignItems: "center",
               justifyContent: "space-between",
               flexDirection: "row",
             }}
+            onPress={() => handlePressItemEdit(item, popup)}
           >
             <View
               style={{
@@ -64,7 +65,7 @@ const ExpenseList = ({ props }) => {
             <Text style={{ color: "black", fontWeight: "bold" }}>
               {item.amount}
             </Text>
-          </SafeAreaView>
+          </TouchableOpacity>
         )}
       />
     </SafeAreaView>
