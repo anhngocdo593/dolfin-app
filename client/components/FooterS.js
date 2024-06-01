@@ -24,7 +24,7 @@ const FooterS = () => {
           flex: "1",
           alignItems: "center",
         }}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("DefaultPage")}
       >
         <FontAwesome name="home" size={24} color="gray" />
       </TouchableOpacity>
@@ -58,7 +58,7 @@ const FooterS = () => {
           flex: "1",
           alignItems: "center",
         }}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("ChartPage")}
       >
         <FontAwesome name="pie-chart" size={24} color="gray" />
       </TouchableOpacity>

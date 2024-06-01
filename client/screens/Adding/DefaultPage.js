@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import { SearchBar } from "react-native-elements";
 import CalendarComponent from "../../components/CalendarComponent";
 import ExpenseList from "../../components/ExpenseList";
-import { FontAwesome } from "@expo/vector-icons";
 import TvS from "../../components/TvS";
 import FooterS from "../../components/FooterS";
+
 const DefaultPage = () => {
   const [selectedDate, setSelectedDate] = useState("2024-05-20");
   const [day, setDay] = useState("1");
   const [month, setMonth] = useState("6");
   const [year, setYear] = useState("2024");
   const [showCalendar, setShowCalendar] = useState(true);
+  const [searchBar, setSearchBar] = useState("");
+
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
   };
+
   const expenses = [
     {
       _id: "1",
@@ -43,7 +48,11 @@ const DefaultPage = () => {
     setMonth(selectedDate.getUTCMonth() + 1);
     setYear(selectedDate.getUTCFullYear());
     setSelectedDate(date);
-    console.log(day, "  ", month, "    ", year);
+  };
+
+  const updateSearch = (text) => {
+    setSearchBar(text);
+    // Handle search functionality here
   };
 
   return (
@@ -55,11 +64,12 @@ const DefaultPage = () => {
             fontWeight: "bold",
             marginBottom: 20,
             marginLeft: 10,
+            marginRight: 10,
             flexDirection: "row",
             alignItems: "center",
           }}
         >
-          {day}/{month}/{year}
+          {day}-{month}-{year}
           <TouchableOpacity onPress={toggleCalendar}>
             {showCalendar && (
               <FontAwesome name="arrow-up" size={24} className="ml-10" />
@@ -75,7 +85,27 @@ const DefaultPage = () => {
             onDateChange={handleDayPress}
           />
         )}
-        {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
+        {!showCalendar && (
+          <SafeAreaView>
+            <TvS day={day} month={month} year={year}></TvS>
+            <SearchBar
+              containerStyle={{
+                backgroundColor: "#F5F5F5",
+                borderRadius: 10,
+                borderStyle: "dotted",
+              }}
+              placeholder="Tìm kiếm"
+              inputContainerStyle={{
+                placeholder: "Search",
+                backgroundColor: "#F5F5F5",
+                borderRadius: 10,
+                borderStyle: "solid",
+              }}
+              onChangeText={updateSearch} // This is the key part
+              value={searchBar}
+            />
+          </SafeAreaView>
+        )}
         <ExpenseList props={expenses} />
       </SafeAreaView>
       <FooterS></FooterS>

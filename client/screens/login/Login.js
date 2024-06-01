@@ -54,7 +54,7 @@ export default function Login() {
         </View>
         <TouchableOpacity
           className="w-4/5 p-2"
-          onPress={() => navigation.navigate("ResetPass")}
+          onPress={() => navigation.navigate("ForgotPassword")}
         >
           <Text className="text-right text-[#519DD5]">Quên mật khẩu?</Text>
         </TouchableOpacity>

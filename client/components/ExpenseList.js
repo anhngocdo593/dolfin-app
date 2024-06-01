@@ -4,7 +4,10 @@ import { SafeAreaView, View, Text, FlatList, Image } from "react-native";
 const categoryImages = {
   food: require("../assets/food.png"),
   transport: require("../assets/transport.png"),
-  // Thêm các ánh xạ khác tương ứng với các category khác
+  edu: require("../assets/edu.png"),
+  entertaining: require("../assets/entertaining.png"),
+  event: require("../assets/event.png"),
+  clothes: require("../assets/clothes.png"),
 };
 
 const ExpenseList = ({ props }) => {
@@ -25,7 +28,7 @@ const ExpenseList = ({ props }) => {
       <FlatList
         style={{ flex: 1 }}
         data={props}
-        keyExtractor={(item) => item._id.toString()}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <SafeAreaView
             style={{
@@ -59,7 +62,7 @@ const ExpenseList = ({ props }) => {
               </Text>
             </View>
             <Text style={{ flex: 1, color: "black", fontWeight: "bold" }}>
-              {item.percent}50%
+              {item.percentage}%
             </Text>
             <Text style={{ color: "black", fontWeight: "bold" }}>
               {item.amount}

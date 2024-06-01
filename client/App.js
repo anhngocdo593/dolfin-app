@@ -13,12 +13,30 @@ import AddScreen from "./screens/Adding/AddScreen";
 import AccountSetting from "./screens/account/AccountSetting";
 import AccountEdit from "./screens/account/AccountEdit";
 import DefaultPage from "./screens/Adding/DefaultPage";
+import ChartPage from "./screens/Adding/ChartPage";
+import ForgotPassword from "./screens/login/ForgotPassword";
 // import AddDetail from './screens/Adding/AddDetail';
 const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="Splash"
+          component={Splash}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="ChartPage"
+          component={ChartPage}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="DefaultPage"
           component={DefaultPage}
@@ -35,11 +53,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
 
-        <Stack.Screen
-          name="Splash"
-          component={Splash}
-          options={{ headerShown: false }}
-        />
         <Stack.Screen
           name="Login"
           component={Login}
@@ -71,7 +84,7 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Add"
+          name="AddScreen"
           component={AddScreen}
           options={{ headerShown: false }}
         />
