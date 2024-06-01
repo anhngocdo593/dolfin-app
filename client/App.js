@@ -13,12 +13,26 @@ import AddScreen from "./screens/Adding/AddScreen";
 import AccountSetting from "./screens/account/AccountSetting";
 import AccountEdit from "./screens/account/AccountEdit";
 import DefaultPage from "./screens/Adding/DefaultPage";
+import store from './store';
+import { Provider } from 'react-redux';
 // import AddDetail from './screens/Adding/AddDetail';
 const Stack = createStackNavigator();
 export default function App() {
+  
   return (
+    <Provider store={store}>
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Splash">
+        <Stack.Screen
+          name="Splash"
+          component={Splash}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="DefaultPage"
           component={DefaultPage}
@@ -35,11 +49,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
 
-        <Stack.Screen
-          name="Splash"
-          component={Splash}
-          options={{ headerShown: false }}
-        />
         <Stack.Screen
           name="Login"
           component={Login}
@@ -66,16 +75,12 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="Add"
           component={AddScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }

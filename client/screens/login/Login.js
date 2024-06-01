@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, } from "react";
 import {
   View,
   Text,
@@ -10,20 +10,45 @@ import {
 import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
 import homeJson from "../../assets/dolfinjs.json";
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../tokenSlice';
 
-export default function Login() {
+export default function Login({ route, navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigation = useNavigation();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
-    navigation.navigate("O1");
+    try {
+      const response = await fetch('https://money-manager-ebon.vercel.app/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        dispatch(setToken(data.access_token));
+        navigation.navigate('O1');
+      } else {
+        Alert.alert('Login Failed', 'Invalid email or password');
+      }
+    } catch (error) {
+      Alert.alert('Login Failed', 'Something went wrong');
+    }
   };
+
 
   return (
     <ImageBackground source={require("../../assets/bg-fish.png")}>
