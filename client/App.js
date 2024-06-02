@@ -23,11 +23,11 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator>
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Splash"
             component={Splash}
             options={{ headerShown: false }}
-          /> */}
+          />
           <Stack.Screen
             name="DefaultPage"
             component={DefaultPage}
@@ -59,17 +59,17 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Onboarding1"
+            name="O1"
             component={Onboarding1}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Onboarding2"
+            name="O2"
             component={Onboarding2}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Onboarding3"
+            name="O3"
             component={Onboarding3}
             options={{ headerShown: false }}
           />

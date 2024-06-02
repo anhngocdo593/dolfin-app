@@ -16,12 +16,12 @@ const FooterS = () => {
         alignItems: "center",
         backgroundColor: "white",
         borderTopColor: "gray",
-        borderRadius: "90px",
+        borderRadius: 80,
       }}
     >
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("DefaultPage")}
@@ -30,7 +30,7 @@ const FooterS = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("")}
@@ -46,16 +46,16 @@ const FooterS = () => {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#7DB6DF",
-            borderRadius: "50px",
+            borderRadius: 50,
           }}
-          onPress={() => navigation.navigate("Add")}
+          onPress={() => navigation.navigate("AddScreen")}
         >
           <FontAwesome5 name="plus" size={20} color="white" />
         </TouchableOpacity>
       </View>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("ChartPage")}
@@ -64,7 +64,7 @@ const FooterS = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("AccountSetting")}

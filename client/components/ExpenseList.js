@@ -90,7 +90,9 @@ const ExpenseList = ({
   //   Alert.alert('Failed GET expenses', 'Something went wrong');
   // }
   return (
-    <SafeAreaView style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
+    <SafeAreaView
+      style={{ flex: 1, flexDirection: "column", marginTop: 10, padding: 10 }}
+    >
       <Text
         style={{
           alignSelf: "center",
