@@ -47,7 +47,8 @@ export default function AddScreen({ navigation }) {
   const [isItemSelected, setIsItemSelected] = useState(false);
   const [category, setCategory] = useState(null);
   const [amount, setAmount] = useState('');
-  const time = "string"
+  const [selectedHour, setSelectedHour] = useState(12);
+  const [selectedMinute, setSelectedMinute] = useState(0);
   // const images = {
   //   "Ăn uống": require("../../assets/food.png"),
   //   "Di chuyển": require("../../assets/transport.png"),
@@ -88,8 +89,6 @@ export default function AddScreen({ navigation }) {
   
   useEffect (() =>{
     async function postExpenses(url) {
-      var list = []
-  
       try{
         console.log(JSON.stringify({
           amount,
@@ -101,11 +100,12 @@ export default function AddScreen({ navigation }) {
         date.setMonth(selectedMonth)
         date.setFullYear(selectedYear)
         console.log(date)
+        const time = `${selectedHour}:${selectedMinute}`
         const APIresponse = await fetch(url,{
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${token}`,
-            
+                'Content-Type': 'application/json',
               },
               body: JSON.stringify({
                 amount,
@@ -116,6 +116,7 @@ export default function AddScreen({ navigation }) {
               }),
         });
         if (!APIresponse.ok) {
+          console.log(APIresponse)
           throw new Error('Failed to post data');
         }
         const data = await APIresponse.json();
@@ -185,7 +186,7 @@ export default function AddScreen({ navigation }) {
             <TextBox value={description} label={"Ghi chú"} onChangeText={setDescription} />
           </View>
           <SafeAreaView style={styles.containerTime}>
-            <TimeSelectComponent />
+            <TimeSelectComponent min ={selectedMinute} hour = {selectedHour} setSelectedMinute = {setSelectedMinute} setSelectedHour = {setSelectedHour}/>
           </SafeAreaView>
           <SafeAreaView style={styles.containerDay}>
             <DaySelectComponent selectedDay={selectedDay} selectedMonth={selectedMonth} selectedYear={selectedYear} 

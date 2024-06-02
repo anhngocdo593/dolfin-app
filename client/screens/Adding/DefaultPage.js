@@ -11,10 +11,10 @@ import { useSelector } from 'react-redux';
 
 const DefaultPage = () => {
   const today = new Date()
-  const [selectedDate, setSelectedDate] = useState("2024-05-20");
-  const [day, setDay] = useState(today.getDay());
-  const [month, setMonth] = useState(today.getMonth());
+  const [day, setDay] = useState(today.getDate());
+  const [month, setMonth] = useState(today.getMonth() + 1);
   const [year, setYear] = useState(today.getFullYear());
+  const [selectedDate, setSelectedDate] = useState(today.toDateString());
   const [showCalendar, setShowCalendar] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
