@@ -6,9 +6,7 @@ import RNPickerSelect from 'react-native-picker-select';
 const hours = Array.from({ length: 24 }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i }));
 const minutes = Array.from({ length: 60 }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i }));
 
-const TimeSelectComponent = (min = 0, hour = 12) => {
-  const [selectedHour, setSelectedHour] = useState(hour);
-  const [selectedMinute, setSelectedMinute] = useState(min);
+const TimeSelectComponent = ({selectedMinute, selectedHour, setSelectedHour, setSelectedMinute}) => {
 
   return (
     <View style={styles.container}>

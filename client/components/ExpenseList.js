@@ -48,15 +48,17 @@ const ExpenseList = ({
         }
         const data = await APIresponse.json();
         console.log("got data");
-        var i = 0;
         data.forEach((element) => {
-          console.log(element);
           var item = {
-            _id: i,
+            _id: element._id,
+            date: element.date,
             category: element.category,
             amount: element.amount,
+            description: element.description,
+            time: element.time,
+            userID: element.userID,
           };
-          i = i + 1;
+          console.log(item);
           list.push(item);
         });
         setExpensesdata(list);

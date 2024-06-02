@@ -24,13 +24,13 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            name="Splash"
-            component={Splash}
+            name="DefaultPage"
+            component={DefaultPage}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="DefaultPage"
-            component={DefaultPage}
+            name="Splash"
+            component={Splash}
             options={{ headerShown: false }}
           />
           <Stack.Screen

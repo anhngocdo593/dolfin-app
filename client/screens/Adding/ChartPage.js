@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -12,22 +12,7 @@ import FooterS from "../../components/FooterS";
 import PieChart from "react-native-pie-chart";
 import ExpenseList from "../../components/ExpenseList"; // Ensure this is correctly imported
 import { Entypo } from "@expo/vector-icons"; // Make sure to install and link this if using Expo
-
-const data = {
-  January: [
-    { category: "edu", percentage: 50, amount: 100000, color: "#4CAF50" },
-    { category: "food", percentage: 30, amount: 100000, color: "#F44336" },
-    { category: "transport", percentage: 30, amount: 100000, color: "#FFC107" },
-    { category: "event", percentage: 30, amount: 100000, color: "#2196F3" },
-  ],
-  February: [
-    { category: "edu", percentage: 40, amount: 80000, color: "#4CAF50" },
-    { category: "food", percentage: 20, amount: 60000, color: "#F44336" },
-    { category: "transport", percentage: 30, amount: 70000, color: "#FFC107" },
-    { category: "event", percentage: 10, amount: 40000, color: "#2196F3" },
-  ],
-  // Add more months as needed
-};
+import axios from "axios";
 
 const months = [
   "January",
@@ -47,6 +32,41 @@ const months = [
 const ChartPage = () => {
   const [selectedMonth, setSelectedMonth] = useState("January");
   const [modalVisible, setModalVisible] = useState(false);
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchData();
+  }, [selectedMonth]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        "https://money-manager-ebon.vercel.app/expenses/totalexpense"
+      );
+      const formattedData = formatDataByMonth(response.data);
+      setData(formattedData);
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  };
+
+  const formatDataByMonth = (data) => {
+    const result = {};
+    months.forEach((month) => {
+      result[month] = data.filter(
+        (item) =>
+          new Date(item.date).toLocaleString("default", { month: "long" }) ===
+          month
+      );
+    });
+    return result;
+  };
+
   const selectedData = data[selectedMonth] || [];
   const chartData = selectedData.map((item) => item.percentage);
   const chartColors = selectedData.map((item) => item.color);
@@ -89,7 +109,11 @@ const ChartPage = () => {
           </TouchableOpacity>
         </Modal>
 
-        {selectedData.length > 0 ? (
+        {loading ? (
+          <Text style={styles.loadingText}>Loading...</Text>
+        ) : error ? (
+          <Text style={styles.errorText}>Error: {error}</Text>
+        ) : selectedData.length > 0 ? (
           <>
             <PieChart
               widthAndHeight={150}
@@ -99,7 +123,7 @@ const ChartPage = () => {
               coverFill="#FFF"
               style={{ alignSelf: "center", justifyContent: "center" }}
             />
-            <ExpenseList props={selectedData} />
+            <ExpenseList />
           </>
         ) : (
           <Text style={styles.noDataText}>
@@ -150,6 +174,18 @@ const styles = StyleSheet.create({
   noDataText: {
     fontSize: 18,
     color: "black",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  loadingText: {
+    fontSize: 18,
+    color: "black",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    color: "red",
     textAlign: "center",
     marginTop: 20,
   },

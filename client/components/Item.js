@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import {  View, Text,  Image} from "react-native";
+import {  View, Text,  Image, TouchableOpacity} from "react-native";
 
 const categoryImages = {
-    'food': require("../assets/food.png"),
-    'transport': require("../assets/transport.png"),
+  'food': require("../assets/food.png"),
+  'transport': require("../assets/transport.png"),
+  "edu": require("../assets/edu.png"),
+  "clothes": require("../assets/clothes.png"),
+  "beauty": require("../assets/beauty.png"),
+  "entertaining": require("../assets/entertaining.png"),
+  "event": require("../assets/event.png"),
     // Thêm các ánh xạ khác tương ứng với các category khác
   };
 const Item = ({ item}) => {
@@ -38,9 +43,11 @@ const Item = ({ item}) => {
                 {item.category}
               </Text>
             </View>
+            <TouchableOpacity>
             <Text style={{ color: "black", fontWeight: "bold" }}>
               {item.amount}
             </Text>
+            </TouchableOpacity>
         </View>
     )
 };

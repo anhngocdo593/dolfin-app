@@ -6,58 +6,37 @@ import {
   View,
   Animated,
   Dimensions,
+  Alert,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
-import { SearchBar } from "react-native-elements";
-import { useSelector } from "react-redux";
 import CalendarComponent from "../../components/CalendarComponent";
 import ExpenseList from "../../components/ExpenseList";
+import { FontAwesome } from "@expo/vector-icons";
 import TvS from "../../components/TvS";
 import FooterS from "../../components/FooterS";
 import BottomPopup from "../../components/BottomPopup";
+import { useSelector } from "react-redux";
 
 const DefaultPage = () => {
   const today = new Date();
-  const [selectedDate, setSelectedDate] = useState(
-    today.toISOString().split("T")[0]
-  );
-  const [day, setDay] = useState(today.getUTCDate());
-  const [month, setMonth] = useState(today.getUTCMonth() + 1);
-  const [year, setYear] = useState(today.getUTCFullYear());
+  const [day, setDay] = useState(today.getDate());
+  const [month, setMonth] = useState(today.getMonth() + 1);
+  const [year, setYear] = useState(today.getFullYear());
+  const [selectedDate, setSelectedDate] = useState(today.toDateString());
   const [showCalendar, setShowCalendar] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
-  const [expensesLoading, setExpensesLoading] = useState(true);
-  const [searchBar, setSearchBar] = useState("");
+  const [expensesloading, setExpensesloading] = useState(true);
   const popupHeight = useRef(new Animated.Value(0)).current;
   const { height } = Dimensions.get("window");
-  const token = useSelector((state) => state.token);
 
-  const expenses = [
-    { _id: "1", category: "transport", amount: 300000 },
-    { _id: "2", category: "clothing", amount: 400000 },
-    { _id: "3", category: "food", amount: 100000 },
-    { _id: "4", category: "utilities", amount: 300000 },
-  ];
+  const token = useSelector((state) => state.token);
 
   const handlePressItemEdit = async (item) => {
     setEditItem(item);
+    console.log(`Editing ${item.category}`);
     openPopup();
+    console.log(`token: ${token}`);
   };
-
-  const handleDayPress = (date) => {
-    const selectedDate = new Date(date);
-    setDay(selectedDate.getUTCDate());
-    setMonth(selectedDate.getUTCMonth() + 1);
-    setYear(selectedDate.getUTCFullYear());
-    setSelectedDate(date);
-    setExpensesLoading(true);
-  };
-
-  const updateSearch = (text) => {
-    setSearchBar(text);
-  };
-
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
   };
@@ -65,18 +44,49 @@ const DefaultPage = () => {
   const openPopup = () => {
     setIsVisiblePopup(true);
     Animated.timing(popupHeight, {
-      toValue: height * 0.5,
+      toValue: height * 0.5, // Adjust the popup height as needed
       duration: 300,
       useNativeDriver: false,
     }).start();
   };
-
   const closePopup = () => {
     Animated.timing(popupHeight, {
       toValue: 0,
       duration: 300,
       useNativeDriver: false,
     }).start(() => setIsVisiblePopup(false));
+    setExpensesloading(true);
+  };
+  // const expenses = [
+  //   {
+  //     _id: "1",
+  //     category: "transport",
+  //     amount: 300000,
+  //   },
+  //   {
+  //     _id: "2",
+  //     category: "clothing",
+  //     amount: 400000,
+  //   },
+  //   {
+  //     _id: "3",
+  //     category: "food",
+  //     amount: 100000,
+  //   },
+  //   {
+  //     _id: "4",
+  //     category: "utilities",
+  //     amount: 300000,
+  //   },
+  // ];
+  const handleDayPress = (date) => {
+    const selectedDate = new Date(date);
+    setDay(selectedDate.getUTCDate());
+    setMonth(selectedDate.getUTCMonth() + 1);
+    setYear(selectedDate.getUTCFullYear());
+    setSelectedDate(date);
+    setExpensesloading(true);
+    console.log(day, "  ", month, "    ", year);
   };
 
   return (
@@ -88,25 +98,17 @@ const DefaultPage = () => {
             fontWeight: "bold",
             marginBottom: 20,
             marginLeft: 10,
-            marginRight: 10,
             flexDirection: "row",
             alignItems: "center",
           }}
         >
-          {day}-{month}-{year}
+          {day}/{month}/{year}
           <TouchableOpacity onPress={toggleCalendar}>
-            {showCalendar ? (
-              <FontAwesome
-                name="arrow-up"
-                size={24}
-                style={{ marginLeft: 10 }}
-              />
-            ) : (
-              <FontAwesome
-                name="arrow-down"
-                size={24}
-                style={{ marginLeft: 10 }}
-              />
+            {showCalendar && (
+              <FontAwesome name="arrow-up" size={24} className="ml-10" />
+            )}
+            {!showCalendar && (
+              <FontAwesome name="arrow-down" size={24} className="ml-10" />
             )}
           </TouchableOpacity>
         </Text>
@@ -116,39 +118,27 @@ const DefaultPage = () => {
             onDateChange={handleDayPress}
           />
         )}
-        {!showCalendar && <TvS day={day} month={month} year={year} />}
-        <SearchBar
-          containerStyle={{
-            backgroundColor: "#F5F5F5",
-            borderRadius: 10,
-            borderStyle: "dotted",
-          }}
-          placeholder="Tìm kiếm"
-          inputContainerStyle={{
-            backgroundColor: "#F5F5F5",
-            borderRadius: 10,
-            borderStyle: "solid",
-          }}
-          onChangeText={updateSearch}
-          value={searchBar}
-        />
+        {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
         <ExpenseList
           handlePressItemEdit={handlePressItemEdit}
-          expensesLoading={expensesLoading}
-          setExpensesLoading={setExpensesLoading}
+          expensesloading={expensesloading}
+          setExpensesloading={setExpensesloading}
           day={day}
           month={month}
           year={year}
         />
-        <BottomPopup
-          isVisiblePopup={isVisiblePopup}
-          popupHeight={popupHeight}
-          openPopup={openPopup}
-          closePopup={closePopup}
-          item={editItem}
-        />
+        {isVisiblePopup && (
+          <BottomPopup
+            isVisiblePopup={isVisiblePopup}
+            popupHeight={popupHeight}
+            openPopup={openPopup}
+            closePopup={closePopup}
+            item={editItem}
+            token={token}
+          ></BottomPopup>
+        )}
       </SafeAreaView>
-      <FooterS />
+      <FooterS></FooterS>
     </View>
   );
 };
