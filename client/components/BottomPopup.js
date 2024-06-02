@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Animated, StyleSheet, Dimensions, Image, SafeAreaView } from 'react-native';
 import Item from './Item';
 import TextBox from "./TextBox";
@@ -8,13 +8,95 @@ import NumberInput from "./NumberInput";
 import CheckBox from "./CheckBox";
 const { height } = Dimensions.get('window');
 
-const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item}) => {
-
-    let tempNotes = ''
-    const handleNotes = (notes) => {
-        tempNotes = notes
+const categoryImages = {
+  'food': require("../assets/food.png"),
+  'transport': require("../assets/transport.png"),
+  "edu": require("../assets/edu.png"),
+  "clothes": require("../assets/clothes.png"),
+  "beauty": require("../assets/beauty.png"),
+  "entertaining": require("../assets/entertaining.png"),
+  "event": require("../assets/event.png"),
+    // Thêm các ánh xạ khác tương ứng với các category khác
+  };
+const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, token}) => {
+    const date = new Date(item.date)
+    const [description, setDescription] = useState(item.description);
+    const [amount, setAmount] = useState(item.amount);
+    const [category, setCategory] = useState(item.category);
+    const [selectedDay, setSelectedDay] = useState(date.getDate());
+    const [selectedMonth, setSelectedMonth] = useState(date.getMonth());
+    const [selectedYear, setSelectedYear] = useState(date.getFullYear());
+    const [selectedHour, setSelectedHour] = useState(date.getHours());
+    const [selectedMinute, setSelectedMinute] = useState(date.getMinutes());
+    const [isEditing, setIsEditing] = useState(false);
+    const handleDayChange = (value) => {
+      setSelectedDay(value);
     };
   
+    const handleMonthChange = (value) => {
+      setSelectedMonth(value);
+    };
+  
+    const handleYearChange = (value) => {
+      setSelectedYear(value);
+    };
+    const closePopupAndEdit = () => {
+      setIsEditing(true)
+    };
+
+    useEffect (() =>{
+      async function putExpenses(url) {
+        try{
+          console.log(JSON.stringify({
+            amount,
+            description,
+            category,
+            date,
+            time,
+          }))
+          date.setDate(selectedDay)
+          date.setMonth(selectedMonth)
+          date.setFullYear(selectedYear)
+          date.setHours(selectedHour)
+          date.setMinutes(selectedMinute)
+          console.log(date)
+          const time = `${selectedHour}:${selectedMinute}`
+          const APIresponse = await fetch(url,{
+                method: 'PUT',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  amount,
+                  description,
+                  category,
+                  date,
+                  time,
+                }),
+          });
+          if (!APIresponse.ok) {
+            console.log(APIresponse)
+            throw new Error('Failed to put data');
+          }
+          const data = await APIresponse.json();
+          console.log(data)
+        }
+        catch (error) {
+        setError(error.message);
+        throw new Error(error);
+      } 
+        // return APIresponse.json();
+      };
+      if (isEditing){
+        console.log(token)
+        putExpenses(`https://money-manager-ebon.vercel.app/expenses/${item._id}`)
+        setIsEditing(false)
+        closePopup()
+      }
+    }
+      )
+
     return (
         <View style={styles.container}>
           {isVisiblePopup && (
@@ -23,27 +105,41 @@ const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item})
                 <TouchableOpacity onPress={closePopup} style={styles.closeButton}>
                     <Text style={[styles.buttonText,{color:"gray"}]}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={closePopup} style={styles.closeButton}>
+                <TouchableOpacity onPress={closePopupAndEdit} style={styles.closeButton}>
                     <Text style={[styles.buttonText,{color:"blue"}]}>Xác nhận</Text>
                 </TouchableOpacity>
                 </View>
-            <View
+                <View
                 style={{
                 alignItems: "center",
                 justifyContent: "space-between",
                 flexDirection: "row",
                 marginBottom:20,
                 }}
-            >
-                <Item item={item}/>
+            > 
+                <View
+                  style={{flex: 1, maxWidth: "auto", flexDirection: "row", alignItems: "center",}}
+                    >
+                  <Image
+                    source={categoryImages[item.category] || require("../assets/fish.png")}
+                    style={{ width: 50, height: 50, marginRight: 20 }}
+                    />
+                  <Text
+                    style={{color: "black",fontWeight: "bold",textTransform: "capitalize",}}
+                    >
+                    {item.category}
+                  </Text>
+                </View>
+                <NumberInput value={amount} setValue={setAmount}/>
             </View>
           <View style={styles.contentNote}>
-            <TextBox value={item.notes} label={"Ghi chú"} onChangeText={(newNotes) => handleNotes(newNotes)} />
+            <TextBox value={description} label={"Ghi chú"} onChangeText={setDescription} />
           </View>
           <View style ={{gap:10,flexGrow:1}}>
             <SafeAreaView style={styles.containerTime}>
-                <TimeSelectComponent />
-                <DaySelectComponent />
+            <TimeSelectComponent selectedMinute ={selectedMinute} selectedHour = {selectedHour} setSelectedMinute = {setSelectedMinute} setSelectedHour = {setSelectedHour}/>
+            <DaySelectComponent selectedDay={selectedDay} selectedMonth={selectedMonth} selectedYear={selectedYear} 
+                                handleDayChange={handleDayChange} handleMonthChange={handleMonthChange} handleYearChange={handleYearChange}/>
             </SafeAreaView>
             <SafeAreaView style={styles.containerDay}>
                 <CheckBox label="Bật thông báo" />

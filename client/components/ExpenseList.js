@@ -34,11 +34,9 @@ const ExpenseList = ({ handlePressItemEdit, expensesloading, setExpensesloading,
       }
       const data = await APIresponse.json();
       console.log('got data')
-      var i = 0
       data.forEach(element => {
-        console.log(element)
-        var item ={_id: i, category: element.category, amount: element.amount}
-        i = i + 1
+        var item ={_id: element._id, date: element.date, category: element.category, amount: element.amount, description: element.description, time: element.time, userID: element.userID}
+        console.log(item)
         list.push(item)
       });
       setExpensesdata(list)

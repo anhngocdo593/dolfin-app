@@ -22,11 +22,18 @@ import { useSelector } from 'react-redux';
 export default function AddScreen({ navigation }) {
   const [submenus, setSubmenus] = useState("Chi");
   const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState('');
+  const [category, setCategory] = useState(null);
   const date = new Date();
+  const [selectedHour, setSelectedHour] = useState(date.getHours());
+  const [selectedMinute, setSelectedMinute] = useState(date.getMinutes());
   const [selectedDay, setSelectedDay] = useState(date.getDate());
   const [selectedMonth, setSelectedMonth] = useState(date.getMonth());
   const [selectedYear, setSelectedYear] = useState(date.getFullYear());
   const [isSaveButtonPressed, setIsSaveButtonPressed] = useState(false)
+  const [isMenu1Visible, setIsMenu1Visible] = useState(true);
+  const [isMenu2Visible, setIsMenu2Visible] = useState(false);
+  const [isItemSelected, setIsItemSelected] = useState(false);
   const [error, setError] = useState(null);
   
   const token = useSelector(state => state.token);
@@ -42,13 +49,6 @@ export default function AddScreen({ navigation }) {
   const handleYearChange = (value) => {
     setSelectedYear(value);
   };
-  const [isMenu1Visible, setIsMenu1Visible] = useState(true);
-  const [isMenu2Visible, setIsMenu2Visible] = useState(false);
-  const [isItemSelected, setIsItemSelected] = useState(false);
-  const [category, setCategory] = useState(null);
-  const [amount, setAmount] = useState('');
-  const [selectedHour, setSelectedHour] = useState(12);
-  const [selectedMinute, setSelectedMinute] = useState(0);
   // const images = {
   //   "Ăn uống": require("../../assets/food.png"),
   //   "Di chuyển": require("../../assets/transport.png"),
@@ -95,10 +95,13 @@ export default function AddScreen({ navigation }) {
           description,
           category,
           date,
+          time,
         }))
         date.setDate(selectedDay)
         date.setMonth(selectedMonth)
         date.setFullYear(selectedYear)
+        date.setHours(selectedHour)
+        date.setMinutes(selectedMinute)
         console.log(date)
         const time = `${selectedHour}:${selectedMinute}`
         const APIresponse = await fetch(url,{
@@ -186,7 +189,7 @@ export default function AddScreen({ navigation }) {
             <TextBox value={description} label={"Ghi chú"} onChangeText={setDescription} />
           </View>
           <SafeAreaView style={styles.containerTime}>
-            <TimeSelectComponent min ={selectedMinute} hour = {selectedHour} setSelectedMinute = {setSelectedMinute} setSelectedHour = {setSelectedHour}/>
+            <TimeSelectComponent selectedMinute ={selectedMinute} selectedHour = {selectedHour} setSelectedMinute = {setSelectedMinute} setSelectedHour = {setSelectedHour}/>
           </SafeAreaView>
           <SafeAreaView style={styles.containerDay}>
             <DaySelectComponent selectedDay={selectedDay} selectedMonth={selectedMonth} selectedYear={selectedYear} 

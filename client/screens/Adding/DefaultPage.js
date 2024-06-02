@@ -48,6 +48,7 @@ const DefaultPage = () => {
       duration: 300,
       useNativeDriver: false,
     }).start(() => setIsVisiblePopup(false));
+    setExpensesloading(true)
   };
   // const expenses = [
   //   {
@@ -112,9 +113,10 @@ const DefaultPage = () => {
         )}
         {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
         <ExpenseList handlePressItemEdit={handlePressItemEdit} expensesloading={expensesloading} setExpensesloading={setExpensesloading} day={day} month={month} year={year} />
-        <BottomPopup isVisiblePopup={isVisiblePopup} popupHeight={popupHeight} openPopup={openPopup} closePopup={closePopup} item={editItem}>
-
+        {
+          isVisiblePopup && <BottomPopup isVisiblePopup={isVisiblePopup} popupHeight={popupHeight} openPopup={openPopup} closePopup={closePopup} item={editItem} token={token}>
         </BottomPopup>
+        } 
       </SafeAreaView>
       <FooterS></FooterS>
     </View>

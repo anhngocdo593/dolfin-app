@@ -17,7 +17,7 @@ const NumberInput = ({value, setValue}) => {
         style={styles.input}
         value={value}
         onChangeText={handleChange}
-        placeholder="0"
+        placeholder={value.toString()}
         keyboardType="numeric"
       />
     </View>
