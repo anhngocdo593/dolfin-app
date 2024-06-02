@@ -1,16 +1,94 @@
-import React from "react";
-import { SafeAreaView, View, Text, FlatList, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import { useSelector } from "react-redux";
 
 const categoryImages = {
   food: require("../assets/food.png"),
   transport: require("../assets/transport.png"),
   edu: require("../assets/edu.png"),
+  clothes: require("../assets/clothes.png"),
+  beauty: require("../assets/beauty.png"),
   entertaining: require("../assets/entertaining.png"),
   event: require("../assets/event.png"),
-  clothes: require("../assets/clothes.png"),
+  // Thêm các ánh xạ khác tương ứng với các category khác
 };
 
-const ExpenseList = ({ props }) => {
+const ExpenseList = ({
+  handlePressItemEdit,
+  expensesloading,
+  setExpensesloading,
+  day,
+  month,
+  year,
+}) => {
+  const token = useSelector((state) => state.token);
+  const [expensesdata, setExpensesdata] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    async function getExpenses(url) {
+      var list = [];
+      console.log(`fetching from ${url}`);
+      try {
+        const APIresponse = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!APIresponse.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await APIresponse.json();
+        console.log("got data");
+        var i = 0;
+        data.forEach((element) => {
+          console.log(element);
+          var item = {
+            _id: i,
+            category: element.category,
+            amount: element.amount,
+          };
+          i = i + 1;
+          list.push(item);
+        });
+        setExpensesdata(list);
+        setExpensesloading(false);
+      } catch (error) {
+        setError(error.message);
+        throw new Error(error);
+      }
+      // return APIresponse.json();
+    }
+    if (expensesloading) {
+      console.log("loading expense");
+      getExpenses(
+        `https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`
+      );
+      setExpensesloading(false);
+    }
+  });
+  // try {
+  //   console.log(token)
+  //   const response = fetch(`https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`,{
+  //     method: 'GET',
+  //     headers: {
+  //       'Authorization': `Bearer ${token}`
+  //     },
+  //   });
+  //   console.log(token)
+  //   const data = response.json();
+  //   console.log(data)
+  // } catch(error){
+  //   Alert.alert('Failed GET expenses', 'Something went wrong');
+  // }
   return (
     <SafeAreaView style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
       <Text
@@ -27,15 +105,16 @@ const ExpenseList = ({ props }) => {
       </Text>
       <FlatList
         style={{ flex: 1 }}
-        data={props}
+        data={expensesdata}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <SafeAreaView
+          <TouchableOpacity
             style={{
               alignItems: "center",
               justifyContent: "space-between",
               flexDirection: "row",
             }}
+            onPress={() => handlePressItemEdit(item)}
           >
             <View
               style={{
@@ -67,7 +146,7 @@ const ExpenseList = ({ props }) => {
             <Text style={{ color: "black", fontWeight: "bold" }}>
               {item.amount}
             </Text>
-          </SafeAreaView>
+          </TouchableOpacity>
         )}
       />
     </SafeAreaView>

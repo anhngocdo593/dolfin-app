@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -18,44 +18,126 @@ import TimeSelectComponent from "../../components/TimeSelect";
 import DaySelectComponent from "../../components/DaySelect";
 import NumberInput from "../../components/NumberInput";
 import CheckBox from "../../components/CheckBox";
+import { useSelector } from 'react-redux';
 export default function AddScreen({ navigation }) {
-  const [notes, setNotes] = useState("");
   const [submenus, setSubmenus] = useState("Chi");
+  const [description, setDescription] = useState("");
+  const date = new Date();
+  const [selectedDay, setSelectedDay] = useState(date.getDate());
+  const [selectedMonth, setSelectedMonth] = useState(date.getMonth());
+  const [selectedYear, setSelectedYear] = useState(date.getFullYear());
+  const [isSaveButtonPressed, setIsSaveButtonPressed] = useState(false)
+  const [error, setError] = useState(null);
+  
+  const token = useSelector(state => state.token);
+
+  const handleDayChange = (value) => {
+    setSelectedDay(value);
+  };
+
+  const handleMonthChange = (value) => {
+    setSelectedMonth(value);
+  };
+
+  const handleYearChange = (value) => {
+    setSelectedYear(value);
+  };
   const [isMenu1Visible, setIsMenu1Visible] = useState(true);
   const [isMenu2Visible, setIsMenu2Visible] = useState(false);
   const [isItemSelected, setIsItemSelected] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const images = {
-    "Ăn uống": require("../../assets/food.png"),
-    "Di chuyển": require("../../assets/transport.png"),
-    "Giáo dục": require("../../assets/edu.png"),
-    "Quần áo": require("../../assets/clothes.png"),
-    "Làm đẹp": require("../../assets/beauty.png"),
-    "Sở thích": require("../../assets/entertaining.png"),
-    "Sự kiện": require("../../assets/event.png"),
-    // Add all other items similarly
-  };
+  const [category, setCategory] = useState(null);
+  const [amount, setAmount] = useState('');
+  const time = "string"
+  // const images = {
+  //   "Ăn uống": require("../../assets/food.png"),
+  //   "Di chuyển": require("../../assets/transport.png"),
+  //   "Giáo dục": require("../../assets/edu.png"),
+  //   "Quần áo": require("../../assets/clothes.png"),
+  //   "Làm đẹp": require("../../assets/beauty.png"),
+  //   "Sở thích": require("../../assets/entertaining.png"),
+  //   "Sự kiện": require("../../assets/event.png"),
+  //   // Add all other items similarly
+  // };
+  const images ={
+    'food': require("../../assets/food.png"),
+    'transport': require("../../assets/transport.png"),
+    "edu": require("../../assets/edu.png"),
+    "clothes": require("../../assets/clothes.png"),
+    "beauty": require("../../assets/beauty.png"),
+    "entertaining": require("../../assets/entertaining.png"),
+    "event": require("../../assets/event.png"),
+  }
   const menu1Items = [
-    "Ăn uống",
-    "Di chuyển",
-    "Giáo dục",
-    "Quần áo",
-    "Làm đẹp",
-    "Sở thích",
-    "Sự kiện",
+    "food",
+    "transport",
+    "edu",
+    "clothes",
+    "beauty",
+    "entertaining",
+    "event",
   ];
   const menu2Items = [
-    "Ăn uống",
-    "Di chuyển",
-    "Giáo dục",
-    "Quần áo",
-    "Làm đẹp",
-    "Sở thích",
-    "Sự kiện",
+    "food",
+    "transport",
+    "edu",
+    "clothes",
+    "beauty",
+    "entertaining",
+    "event",
   ];
+  
+  useEffect (() =>{
+    async function postExpenses(url) {
+      var list = []
+  
+      try{
+        console.log(JSON.stringify({
+          amount,
+          description,
+          category,
+          date,
+        }))
+        date.setDate(selectedDay)
+        date.setMonth(selectedMonth)
+        date.setFullYear(selectedYear)
+        console.log(date)
+        const APIresponse = await fetch(url,{
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+            
+              },
+              body: JSON.stringify({
+                amount,
+                description,
+                category,
+                date,
+                time,
+              }),
+        });
+        if (!APIresponse.ok) {
+          throw new Error('Failed to post data');
+        }
+        const data = await APIresponse.json();
+        console.log(data)
+      }
+      catch (error) {
+      setError(error.message);
+      throw new Error(error);
+    } 
+      // return APIresponse.json();
+    };
+    if (isSaveButtonPressed){
+      console.log(token)
+      postExpenses('https://money-manager-ebon.vercel.app/expenses')
+      setIsSaveButtonPressed(false)
+      navigation.navigate('DefaultPage')
+    }
+  }
+    )
   const menuItems = submenus === "Chi" ? menu1Items : menu2Items;
   const handleReturnPress = () => {
-    navigation.navigate("Home");
+    navigation.navigate("DefaultPage");
   };
   const handleChiPress = () => {
     setSubmenus("Chi");
@@ -74,19 +156,20 @@ export default function AddScreen({ navigation }) {
     setIsMenu1Visible(false);
     setIsMenu2Visible(false);
     setIsItemSelected(true);
-    setSelectedItem(item);
+    setCategory(item);
     console.log(isItemSelected);
   };
-  const handleSelectedItemPress = (item) => {
+  const handleSelectedCategoryPress = (item) => {
     console.log(`Selected: ${item}`);
   };
   const handleCancelButtonPress = (item) => {
     console.log(`canceled`);
     setIsItemSelected(false);
-    setSelectedItem(null);
+    setCategory(null);
   };
   const handleSaveButtonPress = (item) => {
     console.log(`Saving`);
+    setIsSaveButtonPressed(true)
   };
   return (
     <ImageBackground
@@ -99,13 +182,14 @@ export default function AddScreen({ navigation }) {
             <ReturnButton onPress={handleReturnPress} />
           </View>
           <View style={styles.contentNote}>
-            <TextBox value={notes} label={"Ghi chú"} onChangeText={setNotes} />
+            <TextBox value={description} label={"Ghi chú"} onChangeText={setDescription} />
           </View>
           <SafeAreaView style={styles.containerTime}>
             <TimeSelectComponent />
           </SafeAreaView>
           <SafeAreaView style={styles.containerDay}>
-            <DaySelectComponent />
+            <DaySelectComponent selectedDay={selectedDay} selectedMonth={selectedMonth} selectedYear={selectedYear} 
+                                handleDayChange={handleDayChange} handleMonthChange={handleMonthChange} handleYearChange={handleYearChange}/>
           </SafeAreaView>
           <SafeAreaView style={styles.containerDay}>
             <CheckBox label="Bật thông báo" />
@@ -176,13 +260,13 @@ export default function AddScreen({ navigation }) {
                   justifyContent: "space-between",
                   alignItems: "center",
                 }}
-                onPress={handleSelectedItemPress(selectedItem)}
+                onPress={handleSelectedCategoryPress(category)}
               >
                 <View style={{ flexDirection: "row" }}>
-                  <Image style={styles.image} source={images[selectedItem]} />
-                  <Text style={styles.dropdownItem}>{selectedItem}</Text>
+                  <Image style={styles.image} source={images[category]} />
+                  <Text style={styles.dropdownItem}>{category}</Text>
                 </View>
-                <NumberInput style={styles.numberInput} />
+                <NumberInput style={styles.numberInput} value={amount} setValue={setAmount} />
               </TouchableOpacity>
             </View>
           )}
