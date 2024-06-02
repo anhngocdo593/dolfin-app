@@ -22,7 +22,7 @@ import { useSelector } from 'react-redux';
 export default function AddScreen({ navigation }) {
   const [submenus, setSubmenus] = useState("Chi");
   const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState(null);
   const date = new Date();
   const [selectedHour, setSelectedHour] = useState(date.getHours());
@@ -90,19 +90,14 @@ export default function AddScreen({ navigation }) {
   useEffect (() =>{
     async function postExpenses(url) {
       try{
-        console.log(JSON.stringify({
-          amount,
-          description,
-          category,
-          date,
-          time,
-        }))
         date.setDate(selectedDay)
         date.setMonth(selectedMonth)
         date.setFullYear(selectedYear)
         date.setHours(selectedHour)
         date.setMinutes(selectedMinute)
-        console.log(date)
+        const utc = date.getTime();
+        const offset = 7; // GMT+7
+        const dateGMT7 = new Date(utc + (3600000 * offset));
         const time = `${selectedHour}:${selectedMinute}`
         const APIresponse = await fetch(url,{
               method: 'POST',
@@ -114,7 +109,7 @@ export default function AddScreen({ navigation }) {
                 amount,
                 description,
                 category,
-                date,
+                date:dateGMT7,
                 time,
               }),
         });
@@ -123,7 +118,6 @@ export default function AddScreen({ navigation }) {
           throw new Error('Failed to post data');
         }
         const data = await APIresponse.json();
-        console.log(data)
       }
       catch (error) {
       setError(error.message);

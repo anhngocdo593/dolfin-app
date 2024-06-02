@@ -61,6 +61,7 @@ const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, 
           date.setMinutes(selectedMinute)
           console.log(date)
           const time = `${selectedHour}:${selectedMinute}`
+          console.log(typeof(amount))
           const APIresponse = await fetch(url,{
                 method: 'PUT',
                 headers: {
@@ -130,7 +131,7 @@ const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, 
                     {item.category}
                   </Text>
                 </View>
-                <NumberInput value={amount} setValue={setAmount}/>
+                <NumberInput value={amount} setValue={setAmount} init={amount.toString()}/>
             </View>
           <View style={styles.contentNote}>
             <TextBox value={description} label={"Ghi chú"} onChangeText={setDescription} />

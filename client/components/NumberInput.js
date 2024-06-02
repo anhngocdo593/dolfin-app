@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-const NumberInput = ({value, setValue}) => {
+const NumberInput = ({value, setValue, init = "0"}) => {
 
   const handleChange = (text) => {
     // Validate that the input is a number
@@ -17,7 +17,7 @@ const NumberInput = ({value, setValue}) => {
         style={styles.input}
         value={value}
         onChangeText={handleChange}
-        placeholder={value.toString()}
+        placeholder={init}
         keyboardType="numeric"
       />
     </View>

@@ -42,7 +42,6 @@ const DefaultPage = () => {
       console.log('got data')
       data.forEach(element => {
         var item = {_id: element._id, date: element.date, category: element.category, amount: element.amount, description: element.description, time: element.time, userID: element.userID}
-        console.log(item)
         list.push(item)
       });
       setExpensesdata(list)
