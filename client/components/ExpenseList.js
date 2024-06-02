@@ -14,15 +14,14 @@ const categoryImages = {
   // Thêm các ánh xạ khác tương ứng với các category khác
 };
 
-const ExpenseList = ({ handlePressItemEdit, popup, day, month, year }) => {
+const ExpenseList = ({ handlePressItemEdit, expensesloading, setExpensesloading, day, month, year }) => {
   const token = useSelector(state => state.token);
-  const [expensesloading, setExpensesloading] = useState(true);
   const [expensesdata, setExpensesdata] = useState(null)
   const [error, setError] = useState(null);
   useEffect (() =>{
   async function getExpenses(url) {
     var list = []
-
+    console.log(`fetching from ${url}`)
     try{
       const APIresponse = await fetch(url,{
             method: 'GET',
@@ -34,11 +33,13 @@ const ExpenseList = ({ handlePressItemEdit, popup, day, month, year }) => {
         throw new Error('Failed to fetch data');
       }
       const data = await APIresponse.json();
-      console.log(data)
+      console.log('got data')
+      var i = 0
       data.forEach(element => {
         console.log(element)
-        // var item ={value: element.id, label: element.name}
-        // list.push(item)
+        var item ={_id: i, category: element.category, amount: element.amount}
+        i = i + 1
+        list.push(item)
       });
       setExpensesdata(list)
       setExpensesloading(false)
@@ -50,7 +51,9 @@ const ExpenseList = ({ handlePressItemEdit, popup, day, month, year }) => {
     // return APIresponse.json();
   };
   if (expensesloading){
+    console.log('loading expense')
   getExpenses(`https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`)
+  setExpensesloading(false)
   }}
   )
   // try {
@@ -84,7 +87,7 @@ const ExpenseList = ({ handlePressItemEdit, popup, day, month, year }) => {
       <FlatList
         style={{ flex: 1 }}
         data={expensesdata}
-        keyExtractor={(item) => item._id.toString()}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={{

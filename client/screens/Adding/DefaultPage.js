@@ -18,6 +18,7 @@ const DefaultPage = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
+  const [expensesloading, setExpensesloading] = useState(true);
   const popupHeight = useRef(new Animated.Value(0)).current;
   const { height } = Dimensions.get('window');
 
@@ -76,6 +77,7 @@ const DefaultPage = () => {
     setMonth(selectedDate.getUTCMonth() + 1);
     setYear(selectedDate.getUTCFullYear());
     setSelectedDate(date);
+    setExpensesloading(true);
     console.log(day, "  ", month, "    ", year);
   };
 
@@ -109,7 +111,7 @@ const DefaultPage = () => {
           />
         )}
         {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
-        <ExpenseList handlePressItemEdit={handlePressItemEdit} day={day} month={month} year={year} />
+        <ExpenseList handlePressItemEdit={handlePressItemEdit} expensesloading={expensesloading} setExpensesloading={setExpensesloading} day={day} month={month} year={year} />
         <BottomPopup isVisiblePopup={isVisiblePopup} popupHeight={popupHeight} openPopup={openPopup} closePopup={closePopup} item={editItem}>
 
         </BottomPopup>

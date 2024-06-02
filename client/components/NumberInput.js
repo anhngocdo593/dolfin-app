@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-const NumberInput = () => {
-  const [value, setValue] = useState('');
+const NumberInput = ({value, setValue}) => {
 
   const handleChange = (text) => {
     // Validate that the input is a number

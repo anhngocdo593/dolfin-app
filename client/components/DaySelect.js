@@ -35,23 +35,7 @@ const generateYears = (startYear, endYear) => {
   }));
 };
 
-const DaySelectComponent = () => {
-  const today = new Date();
-  const [selectedDay, setSelectedDay] = useState(today.getDate());
-  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
-  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
-
-  const handleDayChange = (value) => {
-    setSelectedDay(value);
-  };
-
-  const handleMonthChange = (value) => {
-    setSelectedMonth(value);
-  };
-
-  const handleYearChange = (value) => {
-    setSelectedYear(value);
-  };
+const DaySelectComponent = ({selectedDay,selectedMonth,selectedYear,handleDayChange,handleMonthChange,handleYearChange}) => {
 
   const formatDate = (day, month, year) => {
     const date = new Date(year, month, day);
