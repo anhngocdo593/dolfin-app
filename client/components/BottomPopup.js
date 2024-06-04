@@ -18,17 +18,20 @@ const categoryImages = {
   "event": require("../assets/event.png"),
     // Thêm các ánh xạ khác tương ứng với các category khác
   };
-const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, token}) => {
+const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, token, type}) => {
     const date = new Date(item.date)
     const [description, setDescription] = useState(item.description);
     const [amount, setAmount] = useState(item.amount);
     const [category, setCategory] = useState(item.category);
+    const [isScheduled, setIsScheduled] = useState(item.isScheduled);
     const [selectedDay, setSelectedDay] = useState(date.getDate());
     const [selectedMonth, setSelectedMonth] = useState(date.getMonth());
     const [selectedYear, setSelectedYear] = useState(date.getFullYear());
     const [selectedHour, setSelectedHour] = useState(date.getHours());
     const [selectedMinute, setSelectedMinute] = useState(date.getMinutes());
     const [isEditing, setIsEditing] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [error, setError] = useState(null);
     const handleDayChange = (value) => {
       setSelectedDay(value);
     };
@@ -42,6 +45,9 @@ const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, 
     };
     const closePopupAndEdit = () => {
       setIsEditing(true)
+    };
+    const closePopupAndDelete = () => {
+      setIsDeleting(true)
     };
 
     useEffect (() =>{
@@ -89,10 +95,47 @@ const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, 
       } 
         // return APIresponse.json();
       };
+      async function deleteExpenses(url) {
+        try{
+          console.log('deleting')
+          date.setDate(selectedDay)
+          date.setMonth(selectedMonth)
+          date.setFullYear(selectedYear)
+          date.setHours(selectedHour)
+          date.setMinutes(selectedMinute)
+          console.log(date)
+          const time = `${selectedHour}:${selectedMinute}`
+          console.log(typeof(amount))
+          const APIresponse = await fetch(url,{
+                method: 'DELETE',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+          });
+          if (!APIresponse.ok) {
+            console.log(APIresponse)
+            throw new Error('Failed to delete data');
+          }
+          const data = await APIresponse.json();
+          console.log(data)
+        }
+        catch (error) {
+        setError(error.message);
+        throw new Error(error);
+      } 
+        // return APIresponse.json();
+      };
       if (isEditing){
         console.log(token)
-        putExpenses(`https://money-manager-ebon.vercel.app/expenses/${item._id}`)
+        putExpenses(`https://money-manager-ebon.vercel.app/${type}/${item._id}`)
         setIsEditing(false)
+        closePopup()
+      }
+      if (isDeleting){
+        console.log(token)
+        deleteExpenses(`https://money-manager-ebon.vercel.app/${type}/${item._id}`)
+        setIsDeleting(false)
         closePopup()
       }
     }
@@ -105,6 +148,9 @@ const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, 
                 <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'baseline'}}>
                 <TouchableOpacity onPress={closePopup} style={styles.closeButton}>
                     <Text style={[styles.buttonText,{color:"gray"}]}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={closePopupAndDelete} style={styles.closeButton}>
+                    <Text style={[styles.buttonText,{color:"red"}]}>Xóa</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={closePopupAndEdit} style={styles.closeButton}>
                     <Text style={[styles.buttonText,{color:"blue"}]}>Xác nhận</Text>
@@ -143,7 +189,7 @@ const BottomPopup = ({isVisiblePopup, popupHeight, openPopup, closePopup, item, 
                                 handleDayChange={handleDayChange} handleMonthChange={handleMonthChange} handleYearChange={handleYearChange}/>
             </SafeAreaView>
             <SafeAreaView style={styles.containerDay}>
-                <CheckBox label="Bật thông báo" />
+                {(item.isScheduled !== null && item.isScheduled !== undefined) && <CheckBox checked={isScheduled} setChecked={setIsScheduled} label="Bật thông báo" />}
             </SafeAreaView>
           </View>
             </Animated.View>
