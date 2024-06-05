@@ -35,103 +35,96 @@ const DefaultPage = () => {
   const [expensesdata, setExpensesdata] = useState(null);
   const [incomesdata, setIncomesdata] = useState(null);
   const [error, setError] = useState(null);
+  const [totalExpense, setTotalExpense] = useState(0)
+  const [totalIncome, setTotalIncome] = useState(0)
   const isFocused = useIsFocused();
-
   useEffect(() => {
     if (isFocused) {
-      console.log("Default Page");
-      setExpensesloading(true);
+      console.log("Default Page")
+      setExpensesloading(true)
     }
   }, [isFocused]);
-  useEffect(() => {
+  useEffect (() =>{
     async function getExpenses(url) {
-      var list = [];
-      console.log(`fetching from ${url}`);
-      try {
-        const APIresponse = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      var list = []
+      console.log(`fetching from ${url}`)
+      try{
+        const APIresponse = await fetch(url,{
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
         });
         if (!APIresponse.ok) {
-          throw new Error("Failed to fetch data");
+          throw new Error('Failed to fetch data');
         }
         const data = await APIresponse.json();
-        console.log("got data");
-        data.forEach((element) => {
-          var item = {
-            _id: element._id,
-            date: element.date,
-            category: element.category,
-            amount: element.amount,
-            description: element.description,
-            time: element.time,
-            userID: element.userID,
-          };
-          list.push(item);
+        console.log('got data')
+        var totalEx = 0
+        data.forEach(element => {
+          var item = {_id: element._id, date: element.date, category: element.category, 
+            amount: element.amount, description: element.description, 
+            time: element.time, userID: element.userID};
+            totalEx += element.amount
+          list.push(item)
         });
-        setExpensesdata(list);
-        setExpensesloading(false);
-      } catch (error) {
-        setError(error.message);
-        throw new Error(error);
+        setTotalExpense(totalEx)
+        setExpensesdata(list)
+        setExpensesloading(false)
       }
+      catch (error) {
+      setError(error.message);
+      throw new Error(error);
+    } 
       // return APIresponse.json();
-    }
+    };
     async function getIncomes(url) {
-      var list = [];
-      console.log(`fetching from ${url}`);
-      try {
-        const APIresponse = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      var list = []
+      console.log(`fetching from ${url}`)
+      try{
+        const APIresponse = await fetch(url,{
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
         });
         if (!APIresponse.ok) {
-          throw new Error("Failed to fetch incomes data");
+          throw new Error('Failed to fetch incomes data');
         }
         const data = await APIresponse.json();
-        console.log("got data");
-        data.forEach((element) => {
-          var item = {
-            _id: element._id,
-            date: element.date,
-            category: element.category,
-            amount: element.amount,
-            description: element.description,
-            time: element.time,
-            userID: element.userID,
-            isScheduled: element.isScheduled,
-          };
-          list.push(item);
+        console.log('got data')
+        var total = 0
+        data.forEach(element => {
+          var item = {_id: element._id, date: element.date, category: element.category, 
+            amount: element.amount, description: element.description, 
+            time: element.time, userID: element.userID};
+            total += element.amount
+          list.push(item)
         });
-        setIncomesdata(list);
-        setExpensesloading(false);
-      } catch (error) {
-        setError(error.message);
-        throw new Error(error);
+        setTotalIncome(total)
+        setIncomesdata(list)
+        setExpensesloading(false)
       }
+      catch (error) {
+      setError(error.message);
+      throw new Error(error);
+    } 
       // return APIresponse.json();
-    }
-    if (expensesloading) {
-      console.log("loading expense");
-      getExpenses(
-        `https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`
-      );
-      getIncomes(
-        `https://money-manager-ebon.vercel.app/incomes?day=${day}&month=${month}&year=${year}`
-      );
-      setExpensesloading(false);
-    }
-  });
+    };
+  if (expensesloading){
+    console.log('loading expense')
+    getExpenses(`https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`)
+    getIncomes(`https://money-manager-ebon.vercel.app/incomes?day=${day}&month=${month}&year=${year}`)
+  setExpensesloading(false)
+  }}
+  )
 
   const handlePressItemEdit = async (item) => {
-    setEditItem(item);
-    console.log(`Editing ${item.category}`);
-    openPopup();
-  };
+    setEditItem(item)
+    console.log(`Editing ${item.category}`)
+    openPopup()
+    console.log(`token: ${token}`)
+  }
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
   };
@@ -156,7 +149,7 @@ const DefaultPage = () => {
       duration: 300,
       useNativeDriver: false,
     }).start(() => setIsVisiblePopup(false));
-    setExpensesloading(true);
+    setExpensesloading(true)
   };
   // const expenses = [
   //   {
@@ -191,7 +184,7 @@ const DefaultPage = () => {
   };
 
   return (
-    <View style={{ flex: 1, flexGrow: 1 }}>
+    <View style={{ flex: 1, flexGrow:1, }}>
       <SafeAreaView style={{ flex: 1 }}>
         <Text
           style={{
@@ -219,8 +212,8 @@ const DefaultPage = () => {
             onDateChange={handleDayPress}
           />
         )}
-        {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
-
+        {!showCalendar && <TvS totalExpense={totalExpense} totalIncome={totalIncome} day={day} month={month} year={year}></TvS>}
+        
         <View style={styles.containerSubmenu}>
           <View>
             <TouchableOpacity
