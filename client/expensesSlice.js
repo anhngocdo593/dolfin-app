@@ -1,18 +1,29 @@
-// store/expensesSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchExpenses = createAsyncThunk(
   "expenses/fetchExpenses",
-  async ({ month, year }) => {
-    console.log(month, year);
-    const response = await axios.get(
-      "https://money-manager-ebon.vercel.app/expenses/totalexpense",
-      {
-        params: { month, year },
+  async ({ month, year, token }, { rejectWithValue }) => {
+    console.log("token: " + token);
+    try {
+      const response = await axios.get(
+        "https://money-manager-ebon.vercel.app/expenses/MonthlyExpenses",
+        {
+          params: { month, year },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("du lieu expenseL", response.data);
+      return response.data;
+    } catch (error) {
+      // Return a custom error message
+      if (error.response && error.response.status === 401) {
+        return rejectWithValue({ message: "Unauthorized", statusCode: 401 });
       }
-    );
-    return response.data;
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -36,7 +47,9 @@ const expensesSlice = createSlice({
       })
       .addCase(fetchExpenses.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.error = action.payload
+          ? action.payload.message
+          : action.error.message;
       });
   },
 });

@@ -41,17 +41,19 @@ const ChartPage = () => {
   const expenses = useSelector((state) => state.expenses.data[selectedMonth]);
   const status = useSelector((state) => state.expenses.status);
   const error = useSelector((state) => state.expenses.error);
+  const token = useSelector((state) => state.token);
 
   useEffect(() => {
     const monthIndex = months.indexOf(selectedMonth) + 1;
     const year = parseInt(selectedYear, 10);
-    if (!isNaN(year)) {
-      dispatch(fetchExpenses({ month: monthIndex, year }));
+    if (!isNaN(year) && token) {
+      dispatch(fetchExpenses({ month: monthIndex, year, token }));
     }
-  }, [selectedMonth, selectedYear, dispatch]);
+  }, [selectedMonth, selectedYear, dispatch, token]);
 
   const chartData = expenses ? expenses.map((item) => item.percentage) : [];
   const chartColors = expenses ? expenses.map((item) => item.color) : [];
+  const totalPercentage = chartData.reduce((sum, value) => sum + value, 0);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -59,9 +61,9 @@ const ChartPage = () => {
 
   const handleYearSubmit = () => {
     const year = parseInt(selectedYear, 10);
-    if (!isNaN(year)) {
+    if (!isNaN(year) && token) {
       dispatch(
-        fetchExpenses({ month: months.indexOf(selectedMonth) + 1, year })
+        fetchExpenses({ month: months.indexOf(selectedMonth) + 1, year, token })
       );
       Keyboard.dismiss();
     } else {
@@ -120,14 +122,20 @@ const ChartPage = () => {
           <Text style={styles.errorText}>Error: {error}</Text>
         ) : expenses ? (
           <>
-            <PieChart
-              widthAndHeight={150}
-              series={chartData}
-              sliceColor={chartColors}
-              coverRadius={0.45}
-              coverFill="#FFF"
-              style={{ alignSelf: "center", justifyContent: "center" }}
-            />
+            {totalPercentage > 0 ? (
+              <PieChart
+                widthAndHeight={150}
+                series={chartData}
+                sliceColor={chartColors}
+                coverRadius={0.45}
+                coverFill="#FFF"
+                style={{ alignSelf: "center", justifyContent: "center" }}
+              />
+            ) : (
+              <Text style={styles.noDataText}>
+                No data available for {selectedMonth}
+              </Text>
+            )}
             <ExpenseList expensesdata={expenses} />
           </>
         ) : (
