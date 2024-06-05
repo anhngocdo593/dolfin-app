@@ -34,7 +34,7 @@ const NotificationScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../../assets/dolphin.jpg")} // Ensure this path is correct
+      source={require("../../assets/dolphin.jpg")}
       style={styles.backgroundImage}
     >
       <View style={{ flex: 1 }}>

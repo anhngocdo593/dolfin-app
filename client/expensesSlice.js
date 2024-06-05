@@ -15,7 +15,13 @@ export const fetchExpenses = createAsyncThunk(
           },
         }
       );
-      console.log("du lieu expenseL", response.data);
+      console.log(
+        "du lieu expensesList cua thang ",
+        month,
+        " nam",
+        year,
+        response.data
+      );
       return response.data;
     } catch (error) {
       // Return a custom error message
