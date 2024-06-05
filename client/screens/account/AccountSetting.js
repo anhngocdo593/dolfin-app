@@ -41,7 +41,7 @@ const AccountSetting = () => {
             source={require("../../assets/pf.png")}
           />
           <Text className="mt-2 w-full text-center text-black-400 text-base">
-            Sy{user.firstName} {user.lastName}Huynh
+            {user.name}
           </Text>
         </View>
         <View className=" container w-full items-end -mt-16 mr-6">
@@ -63,7 +63,7 @@ const AccountSetting = () => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Tên</Text>
-            <Text className="text-gray-800">{user.lastName}</Text>
+            <Text className="text-gray-800">{user.name}</Text>
           </View>
 
           <View className="flex-row items-center border-b border-gray-200 pb-2 mb-2">
@@ -74,7 +74,7 @@ const AccountSetting = () => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Năm sinh</Text>
-            <Text className="text-gray-800">{user.DOB} </Text>
+            <Text className="text-gray-800">{user.year} </Text>
           </View>
 
           <View className="flex-row items-center border-b border-gray-200 pb-2 mb-2">
@@ -85,7 +85,7 @@ const AccountSetting = () => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Nghề nghiệp</Text>
-            <Text className="text-gray-800"></Text>
+            <Text className="text-gray-800">{user.job}</Text>
           </View>
 
           <View className="flex-row items-center pb-2">
@@ -98,7 +98,7 @@ const AccountSetting = () => {
             <Text className="flex-1 text-gray-600 ml-1">
               Thu nhập hàng tháng
             </Text>
-            <Text className="text-gray-800"></Text>
+            <Text className="text-gray-800">{user.income}</Text>
           </View>
         </View>
 

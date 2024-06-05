@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -21,20 +21,26 @@ export default function Register() {
 
   const { loading, user, error } = useSelector((state) => state.auth);
 
+  useEffect(() => {
+    if (user) {
+      Alert.alert("Success", "Registration successful!", [
+        { text: "OK", onPress: () => navigation.navigate("Login") },
+      ]);
+    }
+  }, [user]);
+
   const handlePress = () => {
+    if (!username || !email || !password || !confirmPassword) {
+      alert("Vui lòng điền đầy đủ thông tin!");
+      return;
+    }
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
+
     dispatch(register({ username, email, password }));
   };
-
-  // Show success message when user is registered successfully
-  if (user) {
-    Alert.alert("Success", "Registration successful!", [
-      { text: "OK", onPress: () => navigation.navigate("Login") },
-    ]);
-  }
 
   return (
     <View className="flex-1 items-center pb-10 pt-5 bg-white">

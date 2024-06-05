@@ -8,9 +8,9 @@ export const register = createAsyncThunk(
       const response = await axios.post(
         "https://money-manager-ebon.vercel.app/auth/register",
         {
-          username,
-          email,
-          password,
+          name: username,
+          email: email,
+          password: password,
         }
       );
       return response.data;
