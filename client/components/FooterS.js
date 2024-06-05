@@ -16,12 +16,12 @@ const FooterS = () => {
         alignItems: "center",
         backgroundColor: "white",
         borderTopColor: "gray",
-        borderRadius: "90px",
+        borderRadius: 90,
       }}
     >
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("DefaultPage")}
@@ -30,7 +30,7 @@ const FooterS = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("")}
@@ -46,7 +46,7 @@ const FooterS = () => {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#7DB6DF",
-            borderRadius: "50px",
+            borderRadius: 90,
           }}
           onPress={() => navigation.navigate("Add")}
         >
@@ -55,7 +55,7 @@ const FooterS = () => {
       </View>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("")}
@@ -64,7 +64,7 @@ const FooterS = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("AccountSetting")}
