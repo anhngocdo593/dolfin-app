@@ -69,9 +69,6 @@ const ExpenseList = ({ expensesdata ,handlePressItemEdit, expensesloading, setEx
                 {item.category}
               </Text>
             </View>
-            <Text style={{ flex: 1, color: "black", fontWeight: "bold" }}>
-              {item.percent}50%
-            </Text>
             <Text style={{ color: "black", fontWeight: "bold" }}>
               {item.amount}
             </Text>

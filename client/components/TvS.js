@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const TvS = (day, month, year) => {
+const TvS = ({totalExpense, totalIncome, day, month, year}) => {
   return (
     <View
       style={{
@@ -9,14 +9,12 @@ const TvS = (day, month, year) => {
       }}
     >
       <View style={styles.rowTvS}>
-        <Text style={styles.columnTvS}>Chi phí</Text>
-        <Text style={styles.columnTvS}>Thu nhập</Text>
-        <Text style={styles.columnTvS}>Số dư</Text>
+        <Text style={[styles.columnTvS, {color:'green'}]}>Tổng Chi phí</Text>
+        <Text style={[styles.columnTvS, {color:'red'}]}>Tổng Thu nhập</Text>
       </View>
       <View style={styles.rowTvS}>
-        <Text style={styles.value}>2000000</Text>
-        <Text style={styles.value}>10000000</Text>
-        <Text style={styles.value}>8000000</Text>
+        <Text style={styles.value}>{totalExpense}</Text>
+        <Text style={styles.value}>{totalIncome}</Text>
       </View>
     </View>
   );

@@ -27,8 +27,9 @@ const DefaultPage = () => {
   const [expensesdata, setExpensesdata] = useState(null)
   const [incomesdata, setIncomesdata] = useState(null)
   const [error, setError] = useState(null);
+  const [totalExpense, setTotalExpense] = useState(0)
+  const [totalIncome, setTotalIncome] = useState(0)
   const isFocused = useIsFocused();
-
   useEffect(() => {
     if (isFocused) {
       console.log("Default Page")
@@ -51,12 +52,15 @@ const DefaultPage = () => {
         }
         const data = await APIresponse.json();
         console.log('got data')
+        var totalEx = 0
         data.forEach(element => {
           var item = {_id: element._id, date: element.date, category: element.category, 
             amount: element.amount, description: element.description, 
-            time: element.time, userID: element.userID}
+            time: element.time, userID: element.userID};
+            totalEx += element.amount
           list.push(item)
         });
+        setTotalExpense(totalEx)
         setExpensesdata(list)
         setExpensesloading(false)
       }
@@ -81,10 +85,15 @@ const DefaultPage = () => {
         }
         const data = await APIresponse.json();
         console.log('got data')
+        var total = 0
         data.forEach(element => {
-          var item = {_id: element._id, date: element.date, category: element.category, amount: element.amount, description: element.description, time: element.time, userID: element.userID, isScheduled: element.isScheduled}
+          var item = {_id: element._id, date: element.date, category: element.category, 
+            amount: element.amount, description: element.description, 
+            time: element.time, userID: element.userID};
+            total += element.amount
           list.push(item)
         });
+        setTotalIncome(total)
         setIncomesdata(list)
         setExpensesloading(false)
       }
@@ -195,7 +204,7 @@ const DefaultPage = () => {
             onDateChange={handleDayPress}
           />
         )}
-        {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
+        {!showCalendar && <TvS totalExpense={totalExpense} totalIncome={totalIncome} day={day} month={month} year={year}></TvS>}
         
         <View style={styles.containerSubmenu}>
             <View>
