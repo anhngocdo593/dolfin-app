@@ -33,7 +33,7 @@ const FooterS = () => {
           flex: 1,
           alignItems: "center",
         }}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("NotificationScreen")}
       >
         <FontAwesome name="bell" size={24} color="gray" />
       </TouchableOpacity>

@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import {
+  StyleSheet,
   SafeAreaView,
   Text,
   TouchableOpacity,
@@ -17,6 +19,7 @@ import BottomPopup from "../../components/BottomPopup";
 import { useSelector } from "react-redux";
 
 const DefaultPage = () => {
+  const [submenus, setSubmenus] = useState("Chi");
   const today = new Date();
   const [day, setDay] = useState(today.getDate());
   const [month, setMonth] = useState(today.getMonth() + 1);
@@ -30,7 +33,16 @@ const DefaultPage = () => {
   const { height } = Dimensions.get("window");
   const token = useSelector((state) => state.token);
   const [expensesdata, setExpensesdata] = useState(null);
+  const [incomesdata, setIncomesdata] = useState(null);
   const [error, setError] = useState(null);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      console.log("Default Page");
+      setExpensesloading(true);
+    }
+  }, [isFocused]);
   useEffect(() => {
     async function getExpenses(url) {
       var list = [];
@@ -67,10 +79,49 @@ const DefaultPage = () => {
       }
       // return APIresponse.json();
     }
+    async function getIncomes(url) {
+      var list = [];
+      console.log(`fetching from ${url}`);
+      try {
+        const APIresponse = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!APIresponse.ok) {
+          throw new Error("Failed to fetch incomes data");
+        }
+        const data = await APIresponse.json();
+        console.log("got data");
+        data.forEach((element) => {
+          var item = {
+            _id: element._id,
+            date: element.date,
+            category: element.category,
+            amount: element.amount,
+            description: element.description,
+            time: element.time,
+            userID: element.userID,
+            isScheduled: element.isScheduled,
+          };
+          list.push(item);
+        });
+        setIncomesdata(list);
+        setExpensesloading(false);
+      } catch (error) {
+        setError(error.message);
+        throw new Error(error);
+      }
+      // return APIresponse.json();
+    }
     if (expensesloading) {
       console.log("loading expense");
       getExpenses(
         `https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`
+      );
+      getIncomes(
+        `https://money-manager-ebon.vercel.app/incomes?day=${day}&month=${month}&year=${year}`
       );
       setExpensesloading(false);
     }
@@ -86,6 +137,12 @@ const DefaultPage = () => {
     setShowCalendar(!showCalendar);
   };
 
+  const handleChiPress = () => {
+    setSubmenus("Chi");
+  };
+  const handleThuPress = () => {
+    setSubmenus("Thu");
+  };
   const openPopup = () => {
     setIsVisiblePopup(true);
     Animated.timing(popupHeight, {
@@ -135,7 +192,7 @@ const DefaultPage = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, flexGrow: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
         <Text
           style={{
@@ -164,8 +221,34 @@ const DefaultPage = () => {
           />
         )}
         {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
+
+        <View style={styles.containerSubmenu}>
+          <View>
+            <TouchableOpacity
+              onPress={handleChiPress}
+              style={[
+                styles.button,
+                submenus === "Chi" && styles.selectedButton,
+              ]}
+            >
+              <Text style={{ fontSize: 24 }}>Chi tiêu</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.container}>
+            <TouchableOpacity
+              onPress={handleThuPress}
+              style={[
+                styles.button,
+                submenus === "Thu" && styles.selectedButton,
+              ]}
+            >
+              <Text style={{ fontSize: 24 }}>Thu nhập</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <ExpenseList
-          expensesdata={expensesdata}
+          expensesdata={submenus === "Chi" ? expensesdata : incomesdata}
           handlePressItemEdit={handlePressItemEdit}
           expensesloading={expensesloading}
           setExpensesloading={setExpensesloading}
@@ -181,6 +264,7 @@ const DefaultPage = () => {
             closePopup={closePopup}
             item={editItem}
             token={token}
+            type={submenus === "Chi" ? "expenses" : "incomes"}
           ></BottomPopup>
         )}
       </SafeAreaView>
@@ -190,3 +274,102 @@ const DefaultPage = () => {
 };
 
 export default DefaultPage;
+
+const styles = StyleSheet.create({
+  imageBackground: {
+    flex: 1,
+    height: "auto",
+    marginTop: 20,
+    flexGrow: 1,
+  },
+
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  contentall: {
+    gap: 10,
+  },
+  contentReturn: {
+    flex: 1,
+    alignItems: "left",
+    width: "100%",
+    borderColor: "#cccccc",
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  contentNote: {
+    flex: 1,
+    alignItems: "left",
+    width: "95%",
+    alignSelf: "center",
+  },
+  containerTime: {
+    flex: 1,
+    alignItems: "left",
+    width: "95%",
+    alignSelf: "center",
+  },
+  containerDay: {
+    flex: 1,
+    alignItems: "left",
+    width: "95%",
+    alignSelf: "center",
+  },
+  text: {
+    fontSize: 24,
+    marginBottom: 10,
+  },
+  notesText: {
+    fontSize: 18,
+    color: "#333333",
+  },
+  button: {
+    marginHorizontal: 10,
+    paddingBottom: 10,
+  },
+  containerSubmenu: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  selectedButton: {
+    borderBottomWidth: 2,
+    borderBottomColor: "black",
+  },
+  rectangle: {
+    width: "100%", // Split the screen in half horizontally
+    height: 10, // Full height
+    backgroundColor: "lightgray",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  dropdown: {
+    backgroundColor: "#E9F5FD",
+    padding: 10,
+    borderRadius: 5,
+    width: "100%",
+    gap: 10,
+  },
+  dropdownItem: {
+    padding: 10,
+    alignSelf: "center",
+  },
+  numberInput: {},
+  saveButtonContainer: {
+    bottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "white",
+  },
+  bottomScreen: {
+    flexDirection: "row",
+    marginHorizontal: 20,
+    justifyContent: "space-evenly",
+  },
+});

@@ -25,6 +25,7 @@ export default function AddScreen({ navigation }) {
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState(null);
   const date = new Date();
+  const [isScheduled, setIsScheduled] = useState(false);
   const [selectedHour, setSelectedHour] = useState(date.getHours());
   const [selectedMinute, setSelectedMinute] = useState(date.getMinutes());
   const [selectedDay, setSelectedDay] = useState(date.getDate());
@@ -111,6 +112,7 @@ export default function AddScreen({ navigation }) {
             category,
             date: dateGMT7,
             time,
+            isScheduled,
           }),
         });
         if (!APIresponse.ok) {
@@ -126,7 +128,11 @@ export default function AddScreen({ navigation }) {
     }
     if (isSaveButtonPressed) {
       console.log(token);
-      postExpenses("https://money-manager-ebon.vercel.app/expenses");
+      postExpenses(
+        `https://money-manager-ebon.vercel.app/${
+          submenus === "Chi" ? "expenses" : "incomes"
+        }`
+      );
       setIsSaveButtonPressed(false);
       navigation.navigate("DefaultPage");
     }
@@ -160,6 +166,7 @@ export default function AddScreen({ navigation }) {
   };
   const handleCancelButtonPress = (item) => {
     console.log(`canceled`);
+    console.log(isScheduled);
     setIsItemSelected(false);
     setCategory(null);
   };
@@ -203,7 +210,13 @@ export default function AddScreen({ navigation }) {
             />
           </SafeAreaView>
           <SafeAreaView style={styles.containerDay}>
-            <CheckBox label="Bật thông báo" />
+            {submenus === "Thu" && (
+              <CheckBox
+                checked={isScheduled}
+                setChecked={setIsScheduled}
+                label="Bật thông báo"
+              />
+            )}
           </SafeAreaView>
 
           <View style={styles.container}>

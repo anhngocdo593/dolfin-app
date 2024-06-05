@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const CheckBox = ({ label }) => {
-  const [checked, setChecked] = useState(false);
+const CheckBox = ({ label, checked, setChecked }) => {
 
   const toggleCheckbox = () => {
     setChecked(!checked);

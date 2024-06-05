@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -15,6 +16,7 @@ import AddScreen from "./screens/Adding/AddScreen";
 import AccountSetting from "./screens/account/AccountSetting";
 import AccountEdit from "./screens/account/AccountEdit";
 import DefaultPage from "./screens/Adding/DefaultPage";
+import NotificationScreen from "./screens/others/NotificationScreen"; // Import NotificationScreen
 
 const Stack = createStackNavigator();
 
@@ -24,13 +26,13 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            name="DefaultPage"
-            component={DefaultPage}
+            name="Splash"
+            component={Splash}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Splash"
-            component={Splash}
+            name="DefaultPage"
+            component={DefaultPage}
             options={{ headerShown: false }}
           />
           <Stack.Screen
@@ -81,6 +83,11 @@ export default function App() {
           <Stack.Screen
             name="ForgotPassword"
             component={ForgotPassword}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="NotificationScreen"
+            component={NotificationScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

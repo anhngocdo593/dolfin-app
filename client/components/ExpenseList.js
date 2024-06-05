@@ -48,18 +48,6 @@ const ExpenseList = ({
     <SafeAreaView
       style={{ flex: 1, flexDirection: "column", marginTop: 10, padding: 10 }}
     >
-      <Text
-        style={{
-          alignSelf: "center",
-          justifyContent: "center",
-          color: "black",
-          fontWeight: "bold",
-          marginBottom: 15,
-          fontSize: 20,
-        }}
-      >
-        Expenses List
-      </Text>
       <FlatList
         style={{ flex: 1 }}
         data={expensesdata}

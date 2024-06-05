@@ -1,10 +1,37 @@
-import React from "react";
-import { View, Image, Text, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import FooterS from "../../components/FooterS";
 import { useNavigation } from "@react-navigation/native";
-const AccountSetting = (props) => {
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../../userSlice";
+
+const AccountSetting = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.data);
+  const userStatus = useSelector((state) => state.user.status);
+  const userError = useSelector((state) => state.user.error);
+
+  useEffect(() => {
+    dispatch(fetchUser());
+    console.log(user.data);
+  }, [dispatch]);
+
+  if (userStatus === "loading") {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (userStatus === "failed") {
+    return <Text>Error: {userError.message}</Text>;
+  }
+
   return (
     <View className="container flex-1 ">
       <View className="container flex-auto items-center content-between ">
@@ -14,7 +41,7 @@ const AccountSetting = (props) => {
             source={require("../../assets/pf.png")}
           />
           <Text className="mt-2 w-full text-center text-black-400 text-base">
-            Sy{props.firstName} {props.lastName}Huynh
+            Sy{user.firstName} {user.lastName}Huynh
           </Text>
         </View>
         <View className=" container w-full items-end -mt-16 mr-6">
@@ -36,7 +63,7 @@ const AccountSetting = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Tên</Text>
-            <Text className="text-gray-800">{props.lastName}Sy</Text>
+            <Text className="text-gray-800">{user.lastName}</Text>
           </View>
 
           <View className="flex-row items-center border-b border-gray-200 pb-2 mb-2">
@@ -47,7 +74,7 @@ const AccountSetting = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Năm sinh</Text>
-            <Text className="text-gray-800">{props.DOB} 2003</Text>
+            <Text className="text-gray-800">{user.DOB} </Text>
           </View>
 
           <View className="flex-row items-center border-b border-gray-200 pb-2 mb-2">
@@ -58,7 +85,7 @@ const AccountSetting = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Nghề nghiệp</Text>
-            <Text className="text-gray-800">Sinh viên</Text>
+            <Text className="text-gray-800"></Text>
           </View>
 
           <View className="flex-row items-center pb-2">
@@ -71,7 +98,7 @@ const AccountSetting = (props) => {
             <Text className="flex-1 text-gray-600 ml-1">
               Thu nhập hàng tháng
             </Text>
-            <Text className="text-gray-800">10000000</Text>
+            <Text className="text-gray-800"></Text>
           </View>
         </View>
 
