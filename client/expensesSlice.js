@@ -15,13 +15,7 @@ export const fetchExpenses = createAsyncThunk(
           },
         }
       );
-      console.log(
-        "du lieu expensesList cua thang ",
-        month,
-        " nam",
-        year,
-        response.data
-      );
+
       return response.data;
     } catch (error) {
       // Return a custom error message
@@ -67,7 +61,10 @@ const calculateTotalAmount = (items) => {
 const calculatePercentage = (items, totalAmount) => {
   return items.map((item) => ({
     ...item,
-    percentage: totalAmount === 0 ? 0 : (item.amount / totalAmount) * 100,
+    percentage:
+      totalAmount === 0
+        ? 0
+        : parseFloat(((item.amount / totalAmount) * 100).toFixed(2)),
   }));
 };
 
