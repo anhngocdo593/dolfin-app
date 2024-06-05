@@ -33,7 +33,7 @@ const FooterS = () => {
           flex: 1,
           alignItems: "center",
         }}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("NotificationScreen")}
       >
         <FontAwesome name="bell" size={24} color="gray" />
       </TouchableOpacity>
@@ -48,7 +48,7 @@ const FooterS = () => {
             backgroundColor: "#7DB6DF",
             borderRadius: 90,
           }}
-          onPress={() => navigation.navigate("Add")}
+          onPress={() => navigation.navigate("AddScreen")}
         >
           <FontAwesome5 name="plus" size={20} color="white" />
         </TouchableOpacity>
@@ -58,7 +58,7 @@ const FooterS = () => {
           flex: 1,
           alignItems: "center",
         }}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("ChartPage")}
       >
         <FontAwesome name="pie-chart" size={24} color="gray" />
       </TouchableOpacity>
