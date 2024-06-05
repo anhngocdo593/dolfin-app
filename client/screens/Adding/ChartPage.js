@@ -4,15 +4,17 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
   Modal,
+  TextInput,
+  Keyboard,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import FooterS from "../../components/FooterS";
 import PieChart from "react-native-pie-chart";
-import ExpenseList from "../../components/ExpenseList"; // Ensure this is correctly imported
-import { Entypo } from "@expo/vector-icons"; // Make sure to install and link this if using Expo
-import axios from "axios";
+import ExpenseList from "../../components/ExpenseList";
+import { Entypo } from "@expo/vector-icons";
+import { fetchExpenses } from "../../expensesSlice";
 
 const months = [
   "January",
@@ -31,59 +33,62 @@ const months = [
 
 const ChartPage = () => {
   const [selectedMonth, setSelectedMonth] = useState("January");
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear().toString()
+  );
   const [modalVisible, setModalVisible] = useState(false);
-  const [data, setData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const expenses = useSelector((state) => state.expenses.data[selectedMonth]);
+  const status = useSelector((state) => state.expenses.status);
+  const error = useSelector((state) => state.expenses.error);
 
   useEffect(() => {
-    fetchData();
-  }, [selectedMonth]);
-
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(
-        "https://money-manager-ebon.vercel.app/expenses/totalexpense"
-      );
-      const formattedData = formatDataByMonth(response.data);
-      setData(formattedData);
-    } catch (err) {
-      setError(err.message);
+    const monthIndex = months.indexOf(selectedMonth) + 1;
+    const year = parseInt(selectedYear, 10);
+    if (!isNaN(year)) {
+      dispatch(fetchExpenses({ month: monthIndex, year }));
     }
-    setLoading(false);
-  };
+  }, [selectedMonth, selectedYear, dispatch]);
 
-  const formatDataByMonth = (data) => {
-    const result = {};
-    months.forEach((month) => {
-      result[month] = data.filter(
-        (item) =>
-          new Date(item.date).toLocaleString("default", { month: "long" }) ===
-          month
-      );
-    });
-    return result;
-  };
-
-  const selectedData = data[selectedMonth] || [];
-  const chartData = selectedData.map((item) => item.percentage);
-  const chartColors = selectedData.map((item) => item.color);
+  const chartData = expenses ? expenses.map((item) => item.percentage) : [];
+  const chartColors = expenses ? expenses.map((item) => item.color) : [];
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
 
+  const handleYearSubmit = () => {
+    const year = parseInt(selectedYear, 10);
+    if (!isNaN(year)) {
+      dispatch(
+        fetchExpenses({ month: months.indexOf(selectedMonth) + 1, year })
+      );
+      Keyboard.dismiss();
+    } else {
+      alert("Please enter a valid year.");
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
-        <TouchableOpacity style={styles.header} onPress={toggleModal}>
-          <Text style={styles.headerText}>
-            {selectedMonth}{" "}
-            <Entypo name="chevron-down" size={24} color="black" />
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity style={styles.header} onPress={toggleModal}>
+            <Text style={styles.headerText}>
+              {selectedMonth}{" "}
+              <Entypo name="chevron-down" size={24} color="black" />
+            </Text>
+          </TouchableOpacity>
+          <TextInput
+            style={styles.yearInput}
+            placeholder="Enter year"
+            keyboardType="numeric"
+            value={selectedYear}
+            onChangeText={setSelectedYear}
+            onSubmitEditing={handleYearSubmit}
+            returnKeyType="done"
+          />
+        </View>
 
         <Modal
           transparent={true}
@@ -109,11 +114,11 @@ const ChartPage = () => {
           </TouchableOpacity>
         </Modal>
 
-        {loading ? (
+        {status === "loading" ? (
           <Text style={styles.loadingText}>Loading...</Text>
         ) : error ? (
           <Text style={styles.errorText}>Error: {error}</Text>
-        ) : selectedData.length > 0 ? (
+        ) : expenses ? (
           <>
             <PieChart
               widthAndHeight={150}
@@ -123,7 +128,7 @@ const ChartPage = () => {
               coverFill="#FFF"
               style={{ alignSelf: "center", justifyContent: "center" }}
             />
-            <ExpenseList />
+            <ExpenseList expensesdata={expenses} />
           </>
         ) : (
           <Text style={styles.noDataText}>
@@ -141,6 +146,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   header: {
     alignItems: "center",
     justifyContent: "flex-start",
@@ -151,6 +161,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "black",
+  },
+  yearInput: {
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    padding: 5,
+    fontSize: 18,
+    color: "black",
+    marginBottom: 16,
   },
   modalOverlay: {
     flex: 1,

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   SafeAreaView,
   Text,
@@ -28,8 +28,53 @@ const DefaultPage = () => {
   const [expensesloading, setExpensesloading] = useState(true);
   const popupHeight = useRef(new Animated.Value(0)).current;
   const { height } = Dimensions.get("window");
-
   const token = useSelector((state) => state.token);
+  const [expensesdata, setExpensesdata] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    async function getExpenses(url) {
+      var list = [];
+      console.log(`fetching from ${url}`);
+      try {
+        const APIresponse = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!APIresponse.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await APIresponse.json();
+        console.log("got data");
+        data.forEach((element) => {
+          var item = {
+            _id: element._id,
+            date: element.date,
+            category: element.category,
+            amount: element.amount,
+            description: element.description,
+            time: element.time,
+            userID: element.userID,
+          };
+          list.push(item);
+        });
+        setExpensesdata(list);
+        setExpensesloading(false);
+      } catch (error) {
+        setError(error.message);
+        throw new Error(error);
+      }
+      // return APIresponse.json();
+    }
+    if (expensesloading) {
+      console.log("loading expense");
+      getExpenses(
+        `https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`
+      );
+      setExpensesloading(false);
+    }
+  });
 
   const handlePressItemEdit = async (item) => {
     setEditItem(item);
@@ -120,6 +165,7 @@ const DefaultPage = () => {
         )}
         {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
         <ExpenseList
+          expensesdata={expensesdata}
           handlePressItemEdit={handlePressItemEdit}
           expensesloading={expensesloading}
           setExpensesloading={setExpensesloading}

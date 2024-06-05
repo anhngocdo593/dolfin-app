@@ -18,11 +18,11 @@ import TimeSelectComponent from "../../components/TimeSelect";
 import DaySelectComponent from "../../components/DaySelect";
 import NumberInput from "../../components/NumberInput";
 import CheckBox from "../../components/CheckBox";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 export default function AddScreen({ navigation }) {
   const [submenus, setSubmenus] = useState("Chi");
   const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState(null);
   const date = new Date();
   const [selectedHour, setSelectedHour] = useState(date.getHours());
@@ -30,13 +30,13 @@ export default function AddScreen({ navigation }) {
   const [selectedDay, setSelectedDay] = useState(date.getDate());
   const [selectedMonth, setSelectedMonth] = useState(date.getMonth());
   const [selectedYear, setSelectedYear] = useState(date.getFullYear());
-  const [isSaveButtonPressed, setIsSaveButtonPressed] = useState(false)
+  const [isSaveButtonPressed, setIsSaveButtonPressed] = useState(false);
   const [isMenu1Visible, setIsMenu1Visible] = useState(true);
   const [isMenu2Visible, setIsMenu2Visible] = useState(false);
   const [isItemSelected, setIsItemSelected] = useState(false);
   const [error, setError] = useState(null);
-  
-  const token = useSelector(state => state.token);
+
+  const token = useSelector((state) => state.token);
 
   const handleDayChange = (value) => {
     setSelectedDay(value);
@@ -59,15 +59,15 @@ export default function AddScreen({ navigation }) {
   //   "Sự kiện": require("../../assets/event.png"),
   //   // Add all other items similarly
   // };
-  const images ={
-    'food': require("../../assets/food.png"),
-    'transport': require("../../assets/transport.png"),
-    "edu": require("../../assets/edu.png"),
-    "clothes": require("../../assets/clothes.png"),
-    "beauty": require("../../assets/beauty.png"),
-    "entertaining": require("../../assets/entertaining.png"),
-    "event": require("../../assets/event.png"),
-  }
+  const images = {
+    food: require("../../assets/food.png"),
+    transport: require("../../assets/transport.png"),
+    edu: require("../../assets/edu.png"),
+    clothes: require("../../assets/clothes.png"),
+    beauty: require("../../assets/beauty.png"),
+    entertaining: require("../../assets/entertaining.png"),
+    event: require("../../assets/event.png"),
+  };
   const menu1Items = [
     "food",
     "transport",
@@ -86,59 +86,51 @@ export default function AddScreen({ navigation }) {
     "entertaining",
     "event",
   ];
-  
-  useEffect (() =>{
+
+  useEffect(() => {
     async function postExpenses(url) {
-      try{
-        console.log(JSON.stringify({
-          amount,
-          description,
-          category,
-          date,
-          time,
-        }))
-        date.setDate(selectedDay)
-        date.setMonth(selectedMonth)
-        date.setFullYear(selectedYear)
-        date.setHours(selectedHour)
-        date.setMinutes(selectedMinute)
-        console.log(date)
-        const time = `${selectedHour}:${selectedMinute}`
-        const APIresponse = await fetch(url,{
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                amount,
-                description,
-                category,
-                date,
-                time,
-              }),
+      try {
+        date.setDate(selectedDay);
+        date.setMonth(selectedMonth);
+        date.setFullYear(selectedYear);
+        date.setHours(selectedHour);
+        date.setMinutes(selectedMinute);
+        const utc = date.getTime();
+        const offset = 7; // GMT+7
+        const dateGMT7 = new Date(utc + 3600000 * offset);
+        const time = `${selectedHour}:${selectedMinute}`;
+        const APIresponse = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount,
+            description,
+            category,
+            date: dateGMT7,
+            time,
+          }),
         });
         if (!APIresponse.ok) {
-          console.log(APIresponse)
-          throw new Error('Failed to post data');
+          console.log(APIresponse);
+          throw new Error("Failed to post data");
         }
         const data = await APIresponse.json();
-        console.log(data)
+      } catch (error) {
+        setError(error.message);
+        throw new Error(error);
       }
-      catch (error) {
-      setError(error.message);
-      throw new Error(error);
-    } 
       // return APIresponse.json();
-    };
-    if (isSaveButtonPressed){
-      console.log(token)
-      postExpenses('https://money-manager-ebon.vercel.app/expenses')
-      setIsSaveButtonPressed(false)
-      navigation.navigate('DefaultPage')
     }
-  }
-    )
+    if (isSaveButtonPressed) {
+      console.log(token);
+      postExpenses("https://money-manager-ebon.vercel.app/expenses");
+      setIsSaveButtonPressed(false);
+      navigation.navigate("DefaultPage");
+    }
+  });
   const menuItems = submenus === "Chi" ? menu1Items : menu2Items;
   const handleReturnPress = () => {
     navigation.navigate("DefaultPage");
@@ -173,7 +165,7 @@ export default function AddScreen({ navigation }) {
   };
   const handleSaveButtonPress = (item) => {
     console.log(`Saving`);
-    setIsSaveButtonPressed(true)
+    setIsSaveButtonPressed(true);
   };
   return (
     <ImageBackground
@@ -186,14 +178,29 @@ export default function AddScreen({ navigation }) {
             <ReturnButton onPress={handleReturnPress} />
           </View>
           <View style={styles.contentNote}>
-            <TextBox value={description} label={"Ghi chú"} onChangeText={setDescription} />
+            <TextBox
+              value={description}
+              label={"Ghi chú"}
+              onChangeText={setDescription}
+            />
           </View>
           <SafeAreaView style={styles.containerTime}>
-            <TimeSelectComponent selectedMinute ={selectedMinute} selectedHour = {selectedHour} setSelectedMinute = {setSelectedMinute} setSelectedHour = {setSelectedHour}/>
+            <TimeSelectComponent
+              selectedMinute={selectedMinute}
+              selectedHour={selectedHour}
+              setSelectedMinute={setSelectedMinute}
+              setSelectedHour={setSelectedHour}
+            />
           </SafeAreaView>
           <SafeAreaView style={styles.containerDay}>
-            <DaySelectComponent selectedDay={selectedDay} selectedMonth={selectedMonth} selectedYear={selectedYear} 
-                                handleDayChange={handleDayChange} handleMonthChange={handleMonthChange} handleYearChange={handleYearChange}/>
+            <DaySelectComponent
+              selectedDay={selectedDay}
+              selectedMonth={selectedMonth}
+              selectedYear={selectedYear}
+              handleDayChange={handleDayChange}
+              handleMonthChange={handleMonthChange}
+              handleYearChange={handleYearChange}
+            />
           </SafeAreaView>
           <SafeAreaView style={styles.containerDay}>
             <CheckBox label="Bật thông báo" />
@@ -270,7 +277,11 @@ export default function AddScreen({ navigation }) {
                   <Image style={styles.image} source={images[category]} />
                   <Text style={styles.dropdownItem}>{category}</Text>
                 </View>
-                <NumberInput style={styles.numberInput} value={amount} setValue={setAmount} />
+                <NumberInput
+                  style={styles.numberInput}
+                  value={amount}
+                  setValue={setAmount}
+                />
               </TouchableOpacity>
             </View>
           )}

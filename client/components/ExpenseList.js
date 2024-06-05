@@ -22,6 +22,7 @@ const categoryImages = {
 };
 
 const ExpenseList = ({
+  expensesdata,
   handlePressItemEdit,
   expensesloading,
   setExpensesloading,
@@ -29,54 +30,6 @@ const ExpenseList = ({
   month,
   year,
 }) => {
-  const token = useSelector((state) => state.token);
-  const [expensesdata, setExpensesdata] = useState(null);
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    async function getExpenses(url) {
-      var list = [];
-      console.log(`fetching from ${url}`);
-      try {
-        const APIresponse = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!APIresponse.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await APIresponse.json();
-        console.log("got data");
-        data.forEach((element) => {
-          var item = {
-            _id: element._id,
-            date: element.date,
-            category: element.category,
-            amount: element.amount,
-            description: element.description,
-            time: element.time,
-            userID: element.userID,
-          };
-          console.log(item);
-          list.push(item);
-        });
-        setExpensesdata(list);
-        setExpensesloading(false);
-      } catch (error) {
-        setError(error.message);
-        throw new Error(error);
-      }
-      // return APIresponse.json();
-    }
-    if (expensesloading) {
-      console.log("loading expense");
-      getExpenses(
-        `https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`
-      );
-      setExpensesloading(false);
-    }
-  });
   // try {
   //   console.log(token)
   //   const response = fetch(`https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`,{
