@@ -14,15 +14,13 @@ const notifications = [
   {
     id: "1",
     type: "info",
-    message: "Chúc mừng Bạn vừa nhận được 158 coins từ tiền gửi thanh toán",
+    message: "Bạn đã chi tiêu nhiều hơn tháng trước 1.000.000 ",
   },
   {
     id: "2",
     type: "alert",
-    message:
-      "Theo QD 2345 của Ngân hàng Nhà nước, từ ngày 01/7/2024, Khách hàng cần xác thực sinh trắc học bằng khuôn mặt đã được so khớp dữ liệu trên...",
+    message: "Hãy cập nhật phiên bản mới nhất để sử dụng những tính năng mới",
   },
-  // Add more mock notifications here
 ];
 
 const NotificationScreen = () => {
@@ -34,7 +32,7 @@ const NotificationScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../../assets/dolphin.jpg")} // Ensure this path is correct
+      source={require("../../assets/dolphin.jpg")}
       style={styles.backgroundImage}
     >
       <View style={{ flex: 1 }}>

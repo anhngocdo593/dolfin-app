@@ -26,7 +26,7 @@ const FooterS = () => {
         }}
         onPress={() => navigation.navigate("DefaultPage")}
       >
-        <FontAwesome name="home" size={24} color="gray" />
+        <FontAwesome name="home" size={30} color="gray" />
       </TouchableOpacity>
       <TouchableOpacity
         style={{

@@ -8,6 +8,7 @@ import {
   Modal,
   TextInput,
   Keyboard,
+  Alert,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import FooterS from "../../components/FooterS";
@@ -31,8 +32,21 @@ const months = [
   "December",
 ];
 
+const categoryColors = {
+  food: "#FF6347", // Tomato
+  transport: "#4682B4", // SteelBlue
+  edu: "#32CD32", // LimeGreen
+  clothes: "#FFD700", // Gold
+  beauty: "#FF69B4", // HotPink
+  entertaining: "#8A2BE2", // BlueViolet
+  event: "#FF4500", // OrangeRed
+};
+
 const ChartPage = () => {
-  const [selectedMonth, setSelectedMonth] = useState("January");
+  const handlePressItemEdit = (item) => {
+    Alert.alert("Description ", item.description);
+  };
+  const [selectedMonth, setSelectedMonth] = useState("June");
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear().toString()
   );
@@ -52,7 +66,9 @@ const ChartPage = () => {
   }, [selectedMonth, selectedYear, dispatch, token]);
 
   const chartData = expenses ? expenses.map((item) => item.percentage) : [];
-  const chartColors = expenses ? expenses.map((item) => item.color) : [];
+  const chartColors = expenses
+    ? expenses.map((item) => categoryColors[item.category] || "#000000")
+    : [];
   const totalPercentage = chartData.reduce((sum, value) => sum + value, 0);
 
   const toggleModal = () => {
@@ -124,7 +140,7 @@ const ChartPage = () => {
           <>
             {totalPercentage > 0 ? (
               <PieChart
-                widthAndHeight={150}
+                widthAndHeight={200}
                 series={chartData}
                 sliceColor={chartColors}
                 coverRadius={0.45}
@@ -133,10 +149,24 @@ const ChartPage = () => {
               />
             ) : (
               <Text style={styles.noDataText}>
-                No data available for {selectedMonth}
+                No data available for {selectedMonth} {selectedYear}
               </Text>
             )}
-            <ExpenseList expensesdata={expenses} />
+            <Text
+              style={{
+                alignSelf: "center",
+                fontSize: 25,
+                fontWeight: "bold",
+                marginTop: 20,
+              }}
+            >
+              {" "}
+              Expenses List
+            </Text>
+            <ExpenseList
+              expensesdata={expenses}
+              handlePressItemEdit={handlePressItemEdit}
+            />
           </>
         ) : (
           <Text style={styles.noDataText}>
@@ -153,6 +183,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    margin: 15,
   },
   headerContainer: {
     flexDirection: "row",

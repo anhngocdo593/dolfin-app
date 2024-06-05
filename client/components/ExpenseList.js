@@ -18,7 +18,6 @@ const categoryImages = {
   beauty: require("../assets/beauty.png"),
   entertaining: require("../assets/entertaining.png"),
   event: require("../assets/event.png"),
-  // Thêm các ánh xạ khác tương ứng với các category khác
 };
 
 const ExpenseList = ({
@@ -30,23 +29,9 @@ const ExpenseList = ({
   month,
   year,
 }) => {
-  // try {
-  //   console.log(token)
-  //   const response = fetch(`https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`,{
-  //     method: 'GET',
-  //     headers: {
-  //       'Authorization': `Bearer ${token}`
-  //     },
-  //   });
-  //   console.log(token)
-  //   const data = response.json();
-  //   console.log(data)
-  // } catch(error){
-  //   Alert.alert('Failed GET expenses', 'Something went wrong');
-  // }
   return (
     <SafeAreaView
-      style={{ flex: 1, flexDirection: "column", marginTop: 10, padding: 10 }}
+      style={{ flex: 1, flexDirection: "column", margin: 10, padding: 10 }}
     >
       <FlatList
         style={{ flex: 1 }}
@@ -58,6 +43,7 @@ const ExpenseList = ({
               alignItems: "center",
               justifyContent: "space-between",
               flexDirection: "row",
+              marginBottom: 8,
             }}
             onPress={() => handlePressItemEdit(item)}
           >
@@ -86,10 +72,11 @@ const ExpenseList = ({
               </Text>
             </View>
             <Text style={{ flex: 1, color: "black", fontWeight: "bold" }}>
-              {item.percentage}%
+              {item.percentage}
+              {item.percentage ? "%" : ""}
             </Text>
             <Text style={{ color: "black", fontWeight: "bold" }}>
-              {item.amount}
+              {item.amount} VNĐ
             </Text>
           </TouchableOpacity>
         )}

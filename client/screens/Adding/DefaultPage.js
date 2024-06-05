@@ -131,7 +131,6 @@ const DefaultPage = () => {
     setEditItem(item);
     console.log(`Editing ${item.category}`);
     openPopup();
-    console.log(`token: ${token}`);
   };
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
