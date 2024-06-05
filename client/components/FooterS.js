@@ -16,7 +16,7 @@ const FooterS = () => {
         alignItems: "center",
         backgroundColor: "white",
         borderTopColor: "gray",
-        borderRadius: 80,
+        borderRadius: 90,
       }}
     >
       <TouchableOpacity
@@ -46,7 +46,7 @@ const FooterS = () => {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#7DB6DF",
-            borderRadius: 50,
+            borderRadius: 90,
           }}
           onPress={() => navigation.navigate("AddScreen")}
         >
