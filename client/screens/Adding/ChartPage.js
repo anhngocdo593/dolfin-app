@@ -174,7 +174,7 @@ const ChartPage = () => {
           </Text>
         )}
       </SafeAreaView>
-      <FooterS />
+      <FooterS selectedPage="ChartPage" />
     </View>
   );
 };

@@ -3,13 +3,14 @@ import { View, TouchableOpacity, SafeAreaView } from "react-native";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const FooterS = () => {
+const FooterS = ({ selectedPage }) => {
   const navigation = useNavigation();
+
   return (
     <SafeAreaView
       style={{
-        display: "block",
-        width: "full",
+        display: "flex",
+        width: "100%",
         height: "10%",
         flexDirection: "row",
         justifyContent: "space-around",
@@ -26,7 +27,11 @@ const FooterS = () => {
         }}
         onPress={() => navigation.navigate("DefaultPage")}
       >
-        <FontAwesome name="home" size={30} color="gray" />
+        <FontAwesome
+          name="home"
+          size={24}
+          color={selectedPage === "DefaultPage" ? "blue" : "gray"}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         style={{
@@ -35,7 +40,11 @@ const FooterS = () => {
         }}
         onPress={() => navigation.navigate("NotificationScreen")}
       >
-        <FontAwesome name="bell" size={24} color="gray" />
+        <FontAwesome
+          name="bell"
+          size={24}
+          color={selectedPage === "NotificationScreen" ? "blue" : "gray"}
+        />
       </TouchableOpacity>
       <View style={{}}>
         <TouchableOpacity
@@ -60,7 +69,11 @@ const FooterS = () => {
         }}
         onPress={() => navigation.navigate("ChartPage")}
       >
-        <FontAwesome name="pie-chart" size={24} color="gray" />
+        <FontAwesome
+          name="pie-chart"
+          size={24}
+          color={selectedPage === "ChartPage" ? "blue" : "gray"}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         style={{
@@ -69,7 +82,11 @@ const FooterS = () => {
         }}
         onPress={() => navigation.navigate("AccountSetting")}
       >
-        <FontAwesome name="user" size={24} color="blue" />
+        <FontAwesome
+          name="user"
+          size={24}
+          color={selectedPage === "AccountSetting" ? "blue" : "gray"}
+        />
       </TouchableOpacity>
     </SafeAreaView>
   );

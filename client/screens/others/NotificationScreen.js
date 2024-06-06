@@ -68,7 +68,7 @@ const NotificationScreen = () => {
             )}
           />
         </SafeAreaView>
-        <FooterS />
+        <FooterS selectedPage="NotificationScreen" />
       </View>
     </ImageBackground>
   );
