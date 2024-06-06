@@ -18,7 +18,7 @@ const ForgotPassword = () => {
         className="w-full h-12 border rounded-full border-gray-300  px-4 mb-4"
         placeholder="Enter your email"
       />
-      <TouchableOpacity className="w-full h-12 bg-blue-600 rounded-lg justify-center items-center mb-6">
+      <TouchableOpacity className="w-full h-12 bg-[#519DD5] rounded-lg justify-center items-center mb-6">
         <Text className="text-white text-lg">Gửi mã</Text>
       </TouchableOpacity>
       <TouchableOpacity

@@ -214,7 +214,7 @@ const DefaultPage = () => {
           />
         )}
       </SafeAreaView>
-      <FooterS />
+      <FooterS selectedPage="DefaultPage" />
     </View>
   );
 };
