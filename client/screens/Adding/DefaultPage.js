@@ -260,7 +260,7 @@ const DefaultPage = () => {
           ></BottomPopup>
         )}
       </SafeAreaView>
-      <FooterS></FooterS>
+      <FooterS selectedPage="DefaultPage" />
     </View>
   );
 };

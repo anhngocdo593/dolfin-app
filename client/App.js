@@ -51,21 +51,7 @@ export default function App() {
         <Stack.Navigator>
           {isFirstLaunch ? (
             <>
-              <Stack.Screen
-                name="O1"
-                component={Onboarding1}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="O2"
-                component={Onboarding2}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="O3"
-                component={Onboarding3}
-                options={{ headerShown: false }}
-              />
+              
               <>
                 <Stack.Screen
                   name="Splash"
@@ -117,6 +103,21 @@ export default function App() {
                   component={NotificationScreen}
                   options={{ headerShown: false }}
                 />
+                <Stack.Screen
+                name="O1"
+                component={Onboarding1}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="O2"
+                component={Onboarding2}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="O3"
+                component={Onboarding3}
+                options={{ headerShown: false }}
+              />
               </>
             </>
           ) : (

@@ -35,12 +35,12 @@ const AccountSetting = () => {
   return (
     <View className="container flex-1 ">
       <View className="container flex-auto items-center content-between ">
-        <View className="container bg-[#7DB6DF] w-full h-1/3 border rounded-3xl items-center justify-center">
+        <View className="container bg-[#7DB6DF] w-full h-1/3 rounded-3xl items-center justify-center">
           <Image
             className="w-[100] h-[100] mt-10 rounded-full"
-            source={require("../../assets/pf.png")}
+            source={{ uri: 'https://i.pinimg.com/originals/ff/a0/9a/ffa09aec412db3f54deadf1b3781de2a.png' }}
           />
-          <Text className="mt-2 w-full text-center text-black-400 text-base">
+          <Text className="mt-2 w-full text-center text-white font-bold text-2xl">
             {user.name}
           </Text>
         </View>
@@ -111,7 +111,7 @@ const AccountSetting = () => {
           <Text className="text-red-600 text-lg">Đăng xuất</Text>
         </TouchableOpacity>
       </View>
-      <FooterS />
+      <FooterS selectedPage="AccountSetting" />
     </View>
   );
 };
