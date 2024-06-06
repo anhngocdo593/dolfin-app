@@ -1,6 +1,6 @@
 // DaySelectComponent.js
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -35,41 +35,34 @@ const generateYears = (startYear, endYear) => {
   }));
 };
 
-const DaySelectComponent = ({selectedDay,selectedMonth,selectedYear,handleDayChange,handleMonthChange,handleYearChange}) => {
-
-  const formatDate = (day, month, year) => {
-    const date = new Date(year, month, day);
-    const dayOfWeek = daysOfWeek[date.getDay()];
-    return `${dayOfWeek}, ${day} ${months[month]} ${year}`;
-  };
+const DaySelectComponent = ({ selectedDay, selectedMonth, selectedYear, handleDayChange, handleMonthChange, handleYearChange }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Ngày</Text>
+      <Text style={styles.label}>Chọn Ngày</Text>
       <View style={styles.pickerContainer}>
         <RNPickerSelect
           onValueChange={handleDayChange}
           items={generateDays(selectedMonth + 1, selectedYear)}
           value={selectedDay}
           style={pickerSelectStyles}
-          placeholder={{}}
+          placeholder={{ label: 'Chọn ngày', value: null }}
         />
         <RNPickerSelect
           onValueChange={handleMonthChange}
           items={generateMonths()}
           value={selectedMonth}
           style={pickerSelectStyles}
-          placeholder={{}}
+          placeholder={{ label: 'Chọn tháng', value: null }}
         />
         <RNPickerSelect
           onValueChange={handleYearChange}
           items={generateYears(1900, 2100)}
           value={selectedYear}
           style={pickerSelectStyles}
-          placeholder={{}}
+          placeholder={{ label: 'Chọn năm', value: null }}
         />
       </View>
-      {/* <Text style={styles.dateText}>{formatDate(selectedDay, selectedMonth, selectedYear)}</Text> */}
     </View>
   );
 };
@@ -78,38 +71,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'left',
+    alignItems: 'flex-start',
+    marginVertical: 10,
   },
   label: {
     fontSize: 20,
     color: 'gray',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   pickerContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-  },
-  dateText: {
-    fontSize: 20,
-    marginTop: 10,
   },
 });
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: 16,
-    paddingHorizontal: 5,
-    paddingVertical: 5,
+    fontSize: 18,
     color: 'black',
-    paddingRight: 10, // to ensure the text is never behind the icon
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    width: 100,
+    textAlign: 'center',
+    marginHorizontal: 5,
   },
   inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 5,
-    paddingVertical: 5,
+    fontSize: 18,
     color: 'black',
-    paddingRight: 10, // to ensure the text is never behind the icon
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    width: 100,
+    textAlign: 'center',
+    marginHorizontal: 5,
   },
 });
 

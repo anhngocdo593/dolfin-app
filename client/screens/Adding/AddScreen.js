@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,8 +8,6 @@ import {
   TouchableOpacity,
   ImageBackground,
   SafeAreaView,
-  Modal,
-  FlatList,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import ReturnButton from "../../components/ReturnButton";
@@ -19,6 +17,7 @@ import DaySelectComponent from "../../components/DaySelect";
 import NumberInput from "../../components/NumberInput";
 import CheckBox from "../../components/CheckBox";
 import { useSelector } from "react-redux";
+
 export default function AddScreen({ navigation }) {
   const [submenus, setSubmenus] = useState("Chi");
   const [description, setDescription] = useState("");
@@ -39,141 +38,95 @@ export default function AddScreen({ navigation }) {
 
   const token = useSelector((state) => state.token);
 
-  const handleDayChange = (value) => {
-    setSelectedDay(value);
-  };
-
-  const handleMonthChange = (value) => {
-    setSelectedMonth(value);
-  };
-
-  const handleYearChange = (value) => {
-    setSelectedYear(value);
-  };
-  // const images = {
-  //   "Ăn uống": require("../../assets/food.png"),
-  //   "Di chuyển": require("../../assets/transport.png"),
-  //   "Giáo dục": require("../../assets/edu.png"),
-  //   "Quần áo": require("../../assets/clothes.png"),
-  //   "Làm đẹp": require("../../assets/beauty.png"),
-  //   "Sở thích": require("../../assets/entertaining.png"),
-  //   "Sự kiện": require("../../assets/event.png"),
-  //   // Add all other items similarly
-  // };
-  const images = {
-    food: require("../../assets/food.png"),
-    transport: require("../../assets/transport.png"),
-    edu: require("../../assets/edu.png"),
-    clothes: require("../../assets/clothes.png"),
-    beauty: require("../../assets/beauty.png"),
-    entertaining: require("../../assets/entertaining.png"),
-    event: require("../../assets/event.png"),
-  };
-  const menu1Items = [
-    "food",
-    "transport",
-    "edu",
-    "clothes",
-    "beauty",
-    "entertaining",
-    "event",
-  ];
-  const menu2Items = [
-    "food",
-    "transport",
-    "edu",
-    "clothes",
-    "beauty",
-    "entertaining",
-    "event",
-  ];
-
   useEffect(() => {
-    async function postExpenses(url) {
-      try {
-        date.setDate(selectedDay);
-        date.setMonth(selectedMonth);
-        date.setFullYear(selectedYear);
-        date.setHours(selectedHour);
-        date.setMinutes(selectedMinute);
-        const utc = date.getTime();
-        const offset = 7; // GMT+7
-        const dateGMT7 = new Date(utc + 3600000 * offset);
-        const time = `${selectedHour}:${selectedMinute}`;
-        const APIresponse = await fetch(url, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount,
-            description,
-            category,
-            date: dateGMT7,
-            time,
-            isScheduled,
-          }),
-        });
-        if (!APIresponse.ok) {
-          console.log(APIresponse);
-          throw new Error("Failed to post data");
-        }
-        const data = await APIresponse.json();
-      } catch (error) {
-        setError(error.message);
-        throw new Error(error);
-      }
-      // return APIresponse.json();
-    }
     if (isSaveButtonPressed) {
-      console.log(token);
+      const postExpenses = async (url) => {
+        try {
+          date.setDate(selectedDay);
+          date.setMonth(selectedMonth);
+          date.setFullYear(selectedYear);
+          date.setHours(selectedHour);
+          date.setMinutes(selectedMinute);
+          const utc = date.getTime();
+          const offset = 7; // GMT+7
+          const dateGMT7 = new Date(utc + 3600000 * offset);
+          const time = `${selectedHour}:${selectedMinute}`;
+          const APIresponse = await fetch(url, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              amount,
+              description,
+              category,
+              date: dateGMT7,
+              time,
+              isScheduled,
+            }),
+          });
+          if (!APIresponse.ok) {
+            throw new Error("Failed to post data");
+          }
+          const data = await APIresponse.json();
+          console.log(data);
+          // Navigate to DefaultPage on success
+          navigation.navigate("DefaultPage");
+        } catch (error) {
+          setError(error.message);
+        } finally {
+          setIsSaveButtonPressed(false);
+        }
+      };
       postExpenses(
         `https://money-manager-ebon.vercel.app/${
           submenus === "Chi" ? "expenses" : "incomes"
         }`
       );
-      setIsSaveButtonPressed(false);
-      navigation.navigate("DefaultPage");
     }
-  });
+  }, [isSaveButtonPressed]);
+
   const menuItems = submenus === "Chi" ? menu1Items : menu2Items;
+
   const handleReturnPress = () => {
     navigation.navigate("DefaultPage");
   };
+
   const handleChiPress = () => {
     setSubmenus("Chi");
     setIsMenu1Visible(true);
     setIsMenu2Visible(false);
     setIsItemSelected(false);
   };
+
   const handleThuPress = () => {
     setSubmenus("Thu");
     setIsMenu2Visible(true);
     setIsMenu1Visible(false);
     setIsItemSelected(false);
   };
+
   const handleMenuItemPress = (item) => {
-    console.log(`Selected: ${item}`);
     setIsMenu1Visible(false);
     setIsMenu2Visible(false);
     setIsItemSelected(true);
     setCategory(item);
-    console.log(isItemSelected);
   };
-  const handleSelectedCategoryPress = (item) => {
-    console.log(`Selected: ${item}`);
-  };
-  const handleCancelButtonPress = (item) => {
-    console.log(`canceled`);
-    console.log(isScheduled);
+
+  const handleCancelButtonPress = () => {
     setIsItemSelected(false);
     setCategory(null);
   };
-  const handleSaveButtonPress = (item) => {
-    console.log(`Saving`);
+
+  const handleSaveButtonPress = () => {
     setIsSaveButtonPressed(true);
   };
+
+  const handleDayChange = (day) => {
+    setSelectedDay(day);
+  };
+
   return (
     <ImageBackground
       style={styles.imageBackground}
@@ -205,8 +158,8 @@ export default function AddScreen({ navigation }) {
               selectedMonth={selectedMonth}
               selectedYear={selectedYear}
               handleDayChange={handleDayChange}
-              handleMonthChange={handleMonthChange}
-              handleYearChange={handleYearChange}
+              handleMonthChange={setSelectedMonth}
+              handleYearChange={setSelectedYear}
             />
           </SafeAreaView>
           <SafeAreaView style={styles.containerDay}>
@@ -224,28 +177,24 @@ export default function AddScreen({ navigation }) {
           </View>
 
           <View style={styles.containerSubmenu}>
-            <View>
-              <TouchableOpacity
-                onPress={handleChiPress}
-                style={[
-                  styles.button,
-                  submenus === "Chi" && styles.selectedButton,
-                ]}
-              >
-                <Text style={{ fontSize: 24 }}>Chi tiêu</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.container}>
-              <TouchableOpacity
-                onPress={handleThuPress}
-                style={[
-                  styles.button,
-                  submenus === "Thu" && styles.selectedButton,
-                ]}
-              >
-                <Text style={{ fontSize: 24 }}>Thu nhập</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              onPress={handleChiPress}
+              style={[
+                styles.button,
+                submenus === "Chi" && styles.selectedButton,
+              ]}
+            >
+              <Text style={{ fontSize: 24 }}>Chi tiêu</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleThuPress}
+              style={[
+                styles.button,
+                submenus === "Thu" && styles.selectedButton,
+              ]}
+            >
+              <Text style={{ fontSize: 24 }}>Thu nhập</Text>
+            </TouchableOpacity>
           </View>
 
           {isMenu1Visible && (
@@ -284,7 +233,7 @@ export default function AddScreen({ navigation }) {
                   justifyContent: "space-between",
                   alignItems: "center",
                 }}
-                onPress={handleSelectedCategoryPress(category)}
+                onPress={() => handleSelectedCategoryPress(category)}
               >
                 <View style={{ flexDirection: "row" }}>
                   <Image style={styles.image} source={images[category]} />
@@ -304,9 +253,7 @@ export default function AddScreen({ navigation }) {
         <View style={styles.bottomScreen}>
           <TouchableOpacity
             style={styles.saveButtonContainer}
-            onPress={() => {
-              handleCancelButtonPress();
-            }}
+            onPress={handleCancelButtonPress}
           >
             <View
               style={{
@@ -321,9 +268,7 @@ export default function AddScreen({ navigation }) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.saveButtonContainer}
-            onPress={() => {
-              handleSaveButtonPress();
-            }}
+            onPress={handleSaveButtonPress}
           >
             <View
               style={{
@@ -341,6 +286,7 @@ export default function AddScreen({ navigation }) {
     </ImageBackground>
   );
 }
+
 const styles = StyleSheet.create({
   imageBackground: {
     flex: 1,
@@ -440,3 +386,33 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
 });
+
+const menu1Items = [
+  "food",
+  "transport",
+  "edu",
+  "clothes",
+  "beauty",
+  "entertaining",
+  "event",
+];
+const menu2Items = [
+  "food",
+  "transport",
+  "edu",
+  "clothes",
+  "beauty",
+  "entertaining",
+  "event",
+];
+const images = {
+  food: require("../../assets/food.png"),
+  transport: require("../../assets/transport.png"),
+  edu: require("../../assets/edu.png"),
+  clothes: require("../../assets/clothes.png"),
+  beauty: require("../../assets/beauty.png"),
+  entertaining: require("../../assets/entertaining.png"),
+  event: require("../../assets/event.png"),
+};
+
+
