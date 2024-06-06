@@ -72,6 +72,7 @@ const AccountEdit = (props) => {
               placeholder="Nhập tên"
               value={lastName}
               onChangeText={setLastName}
+              returnKeyType="done"
             />
           </View>
 
@@ -88,6 +89,7 @@ const AccountEdit = (props) => {
               placeholder="Nhập năm sinh"
               value={dob}
               onChangeText={setDob}
+              returnKeyType="done"
             />
           </View>
 
@@ -104,6 +106,7 @@ const AccountEdit = (props) => {
               placeholder="Nhập nghề nghiệp"
               value={job}
               onChangeText={setJob}
+              returnKeyType="done"
             />
           </View>
 
@@ -123,6 +126,7 @@ const AccountEdit = (props) => {
               value={salary}
               onChangeText={setSalary}
               keyboardType="numeric"
+              returnKeyType="done"
             />
           </View>
         </View>

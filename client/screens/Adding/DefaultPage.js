@@ -9,16 +9,18 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import CalendarComponent from "../../components/CalendarComponent";
 import ExpenseList from "../../components/ExpenseList";
 import { FontAwesome } from "@expo/vector-icons";
 import TvS from "../../components/TvS";
 import FooterS from "../../components/FooterS";
 import BottomPopup from "../../components/BottomPopup";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUser } from "../../userSlice";
 
 const DefaultPage = () => {
+  const dispatch = useDispatch();
   const [submenus, setSubmenus] = useState("Chi");
   const today = new Date();
   const [day, setDay] = useState(today.getDate());
@@ -28,54 +30,64 @@ const DefaultPage = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
-  const [expensesloading, setExpensesloading] = useState(true);
+  const [expensesLoading, setExpensesLoading] = useState(true);
   const popupHeight = useRef(new Animated.Value(0)).current;
   const { height } = Dimensions.get("window");
   const token = useSelector((state) => state.token);
-  const [expensesdata, setExpensesdata] = useState(null);
-  const [incomesdata, setIncomesdata] = useState(null);
+  const [expensesData, setExpensesData] = useState(null);
+  const [incomesData, setIncomesData] = useState(null);
   const [error, setError] = useState(null);
   const [totalExpense, setTotalExpense] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const isFocused = useIsFocused();
+  const user = useSelector((state) => state.user.data);
+  const userStatus = useSelector((state) => state.user.status);
+  const userError = useSelector((state) => state.user.error);
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   useEffect(() => {
     if (isFocused) {
-      console.log("Default Page focused");
       fetchData();
     }
   }, [isFocused, day, month, year]);
 
   const fetchData = useCallback(async () => {
-    setExpensesloading(true);
+    setExpensesLoading(true);
     try {
       const [expenses, incomes] = await Promise.all([
-        getExpenses(`https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`),
-        getIncomes(`https://money-manager-ebon.vercel.app/incomes?day=${day}&month=${month}&year=${year}`),
+        getExpenses(
+          `https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`
+        ),
+        getIncomes(
+          `https://money-manager-ebon.vercel.app/incomes?day=${day}&month=${month}&year=${year}`
+        ),
       ]);
-      setExpensesdata(expenses.list);
-      setIncomesdata(incomes.list);
+      setExpensesData(expenses.list);
+      setIncomesData(incomes.list);
       setTotalExpense(expenses.total);
       setTotalIncome(incomes.total);
     } catch (error) {
       setError(error.message);
     } finally {
-      setExpensesloading(false);
+      setExpensesLoading(false);
     }
   }, [day, month, year, token]);
 
   const getExpenses = async (url) => {
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch expenses');
+      throw new Error("Failed to fetch expenses");
     }
     const data = await response.json();
-    const list = data.map(element => ({
+    const list = data.map((element) => ({
       _id: element._id,
       date: element.date,
       category: element.category,
@@ -90,16 +102,16 @@ const DefaultPage = () => {
 
   const getIncomes = async (url) => {
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch incomes');
+      throw new Error("Failed to fetch incomes");
     }
     const data = await response.json();
-    const list = data.map(element => ({
+    const list = data.map((element) => ({
       _id: element._id,
       date: element.date,
       category: element.category,
@@ -153,8 +165,10 @@ const DefaultPage = () => {
     setMonth(selectedDate.getUTCMonth() + 1);
     setYear(selectedDate.getUTCFullYear());
     setSelectedDate(date);
-    setExpensesloading(true);
+    setExpensesLoading(true);
   };
+
+  const finalIncome = totalIncome + (parseInt(user.income) || 0);
 
   return (
     <View style={{ flex: 1 }}>
@@ -162,7 +176,11 @@ const DefaultPage = () => {
         <Text style={styles.header}>
           {day}/{month}/{year}
           <TouchableOpacity onPress={toggleCalendar}>
-            <FontAwesome name={showCalendar ? "arrow-up" : "arrow-down"} size={24} style={styles.icon} />
+            <FontAwesome
+              name={showCalendar ? "arrow-up" : "arrow-down"}
+              size={24}
+              style={styles.icon}
+            />
           </TouchableOpacity>
         </Text>
         {showCalendar && (
@@ -171,8 +189,16 @@ const DefaultPage = () => {
             onDateChange={handleDayPress}
           />
         )}
-        {!showCalendar && <TvS totalExpense={totalExpense} totalIncome={totalIncome} day={day} month={month} year={year} />}
-        
+        {!showCalendar && (
+          <TvS
+            totalExpense={totalExpense}
+            totalIncome={finalIncome}
+            day={day}
+            month={month}
+            year={year}
+          />
+        )}
+
         <View style={styles.containerSubmenu}>
           <TouchableOpacity
             onPress={handleChiPress}
@@ -188,14 +214,14 @@ const DefaultPage = () => {
           </TouchableOpacity>
         </View>
 
-        {expensesloading ? (
+        {expensesLoading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <ExpenseList
-            expensesdata={submenus === "Chi" ? expensesdata : incomesdata}
+            expensesdata={submenus === "Chi" ? expensesData : incomesData}
             handlePressItemEdit={handlePressItemEdit}
-            expensesloading={expensesloading}
-            setExpensesloading={setExpensesloading}
+            expensesLoading={expensesLoading}
+            setExpensesLoading={setExpensesLoading}
             day={day}
             month={month}
             year={year}

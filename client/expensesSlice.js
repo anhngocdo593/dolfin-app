@@ -4,7 +4,6 @@ import axios from "axios";
 export const fetchExpenses = createAsyncThunk(
   "expenses/fetchExpenses",
   async ({ month, year, token }, { rejectWithValue }) => {
-    console.log("token: " + token);
     try {
       const response = await axios.get(
         "https://money-manager-ebon.vercel.app/expenses/MonthlyExpenses",
@@ -14,12 +13,6 @@ export const fetchExpenses = createAsyncThunk(
             Authorization: `Bearer ${token}`,
           },
         }
-      );
-      console.log(
-        "expenses cua thang  ",
-        month,
-        " nam ",
-        year + " " + JSON.stringify(response.data, null, 2)
       );
       return response.data;
     } catch (error) {

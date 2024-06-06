@@ -141,22 +141,16 @@ const ChartPage = () => {
           <Text style={styles.loadingText}>Loading...</Text>
         ) : error ? (
           <Text style={styles.errorText}>Error: {error}</Text>
-        ) : expenses ? (
+        ) : expenses && expenses.length > 0 ? (
           <>
-            {totalPercentage > 0 ? (
-              <PieChart
-                widthAndHeight={200}
-                series={chartData}
-                sliceColor={chartColors}
-                coverRadius={0.45}
-                coverFill="#FFF"
-                style={{ alignSelf: "center", justifyContent: "center" }}
-              />
-            ) : (
-              <Text style={styles.noDataText}>
-                No data available for {selectedMonth} {selectedYear}
-              </Text>
-            )}
+            <PieChart
+              widthAndHeight={200}
+              series={chartData}
+              sliceColor={chartColors}
+              coverRadius={0.45}
+              coverFill="#FFF"
+              style={{ alignSelf: "center", justifyContent: "center" }}
+            />
             <Text style={styles.expensesListHeader}>Expenses List</Text>
             <ExpenseList
               expensesdata={expenses}
@@ -165,7 +159,7 @@ const ChartPage = () => {
           </>
         ) : (
           <Text style={styles.noDataText}>
-            No data available for {selectedMonth}
+            No data available for {selectedMonth} {selectedYear}
           </Text>
         )}
       </SafeAreaView>
