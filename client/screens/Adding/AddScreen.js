@@ -39,6 +39,7 @@ export default function AddScreen({ navigation }) {
   const token = useSelector((state) => state.token);
 
   useEffect(() => {
+
     if (isSaveButtonPressed) {
       const postExpenses = async (url) => {
         try {

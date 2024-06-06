@@ -23,7 +23,6 @@ export const fetchExpenses = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      // Return a custom error message
       if (error.response && error.response.status === 401) {
         return rejectWithValue({ message: "Unauthorized", statusCode: 401 });
       }
