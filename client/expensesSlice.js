@@ -15,10 +15,14 @@ export const fetchExpenses = createAsyncThunk(
           },
         }
       );
-
+      console.log(
+        "expenses cua thang  ",
+        month,
+        " nam ",
+        year + " " + JSON.stringify(response.data, null, 2)
+      );
       return response.data;
     } catch (error) {
-      // Return a custom error message
       if (error.response && error.response.status === 401) {
         return rejectWithValue({ message: "Unauthorized", statusCode: 401 });
       }

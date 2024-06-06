@@ -51,7 +51,9 @@ const AccountEdit = (props) => {
         <View className="bg-[#7DB6DF] w-full h-1/3 border rounded-3xl items-center justify-center">
           <Image
             className="w-[100px] h-[100px] mt-10 rounded-full"
-            source={{ uri: 'https://i.pinimg.com/originals/ff/a0/9a/ffa09aec412db3f54deadf1b3781de2a.png' }}
+            source={{
+              uri: "https://i.pinimg.com/originals/ff/a0/9a/ffa09aec412db3f54deadf1b3781de2a.png",
+            }}
           />
           <Text className="mt-2 w-full text-center text-white font-bold text-2xl"></Text>
         </View>
