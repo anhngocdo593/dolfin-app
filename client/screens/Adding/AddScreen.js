@@ -120,6 +120,7 @@ export default function AddScreen({ navigation }) {
           throw new Error("Failed to post data");
         }
         const data = await APIresponse.json();
+        console.log(data);
       } catch (error) {
         setError(error.message);
         throw new Error(error);
