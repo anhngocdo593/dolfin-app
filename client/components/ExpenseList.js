@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Text, FlatList, Image, TouchableOpacity, Alert } from "react-native";
-import { useSelector } from 'react-redux';
-
+import {
+  SafeAreaView,
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import { useSelector } from "react-redux";
 
 const categoryImages = {
-  'food': require("../assets/food.png"),
-  'transport': require("../assets/transport.png"),
-  "edu": require("../assets/edu.png"),
-  "clothes": require("../assets/clothes.png"),
-  "beauty": require("../assets/beauty.png"),
-  "entertaining": require("../assets/entertaining.png"),
-  "event": require("../assets/event.png"),
-  // Thêm các ánh xạ khác tương ứng với các category khác
+  food: require("../assets/food.png"),
+  transport: require("../assets/transport.png"),
+  edu: require("../assets/edu.png"),
+  clothes: require("../assets/clothes.png"),
+  beauty: require("../assets/beauty.png"),
+  entertaining: require("../assets/entertaining.png"),
+  event: require("../assets/event.png"),
 };
 
-const ExpenseList = ({ expensesdata ,handlePressItemEdit, expensesloading, setExpensesloading, day, month, year }) => {
-  
-  // try {
-  //   console.log(token)
-  //   const response = fetch(`https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`,{
-  //     method: 'GET',
-  //     headers: {
-  //       'Authorization': `Bearer ${token}`
-  //     },
-  //   });
-  //   console.log(token)
-  //   const data = response.json();
-  //   console.log(data)
-  // } catch(error){
-  //   Alert.alert('Failed GET expenses', 'Something went wrong');
-  // }
+const ExpenseList = ({
+  expensesdata,
+  handlePressItemEdit,
+  expensesloading,
+  setExpensesloading,
+  day,
+  month,
+  year,
+}) => {
   return (
-    <SafeAreaView style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
+    <SafeAreaView
+      style={{ flex: 1, flexDirection: "column", margin: 10, padding: 10 }}
+    >
       <FlatList
         style={{ flex: 1 }}
         data={expensesdata}
@@ -42,6 +43,7 @@ const ExpenseList = ({ expensesdata ,handlePressItemEdit, expensesloading, setEx
               alignItems: "center",
               justifyContent: "space-between",
               flexDirection: "row",
+              marginBottom: 8,
             }}
             onPress={() => handlePressItemEdit(item)}
           >
@@ -69,8 +71,15 @@ const ExpenseList = ({ expensesdata ,handlePressItemEdit, expensesloading, setEx
                 {item.category}
               </Text>
             </View>
+<<<<<<< HEAD
+=======
+            <Text style={{ flex: 1, color: "black", fontWeight: "bold" }}>
+              {item.percentage}
+              {item.percentage ? "%" : ""}
+            </Text>
+>>>>>>> 0658265aa17d369db86a49065296edb920223dc4
             <Text style={{ color: "black", fontWeight: "bold" }}>
-              {item.amount}
+              {item.amount} VNĐ
             </Text>
           </TouchableOpacity>
         )}

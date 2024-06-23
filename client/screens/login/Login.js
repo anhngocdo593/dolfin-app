@@ -1,4 +1,4 @@
-import React, { useState, } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,8 +10,8 @@ import {
 import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
 import homeJson from "../../assets/dolfinjs.json";
-import { useDispatch } from 'react-redux';
-import { setToken } from '../../tokenSlice';
+import { useDispatch } from "react-redux";
+import { setToken } from "../../tokenSlice";
 
 export default function Login({ route, navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -25,30 +25,32 @@ export default function Login({ route, navigation }) {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://money-manager-ebon.vercel.app/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      const response = await fetch(
+        "https://money-manager-ebon.vercel.app/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
         dispatch(setToken(data.access_token));
-        navigation.navigate('O1');
+        navigation.navigate("DefaultPage");
       } else {
-        Alert.alert('Login Failed', 'Invalid email or password');
+        Alert.alert("Login Failed", "Invalid email or password");
       }
     } catch (error) {
-      Alert.alert('Login Failed', 'Something went wrong');
+      Alert.alert("Login Failed", "Something went wrong");
     }
   };
-
 
   return (
     <ImageBackground source={require("../../assets/bg-fish.png")}>
@@ -79,7 +81,7 @@ export default function Login({ route, navigation }) {
         </View>
         <TouchableOpacity
           className="w-4/5 p-2"
-          onPress={() => navigation.navigate("ResetPass")}
+          onPress={() => navigation.navigate("ForgotPassword")}
         >
           <Text className="text-right text-[#519DD5]">Quên mật khẩu?</Text>
         </TouchableOpacity>

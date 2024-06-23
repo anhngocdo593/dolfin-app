@@ -16,24 +16,24 @@ const FooterS = () => {
         alignItems: "center",
         backgroundColor: "white",
         borderTopColor: "gray",
-        borderRadius: "90px",
+        borderRadius: 90,
       }}
     >
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("DefaultPage")}
       >
-        <FontAwesome name="home" size={24} color="gray" />
+        <FontAwesome name="home" size={30} color="gray" />
       </TouchableOpacity>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("NotificationScreen")}
       >
         <FontAwesome name="bell" size={24} color="gray" />
       </TouchableOpacity>
@@ -46,25 +46,25 @@ const FooterS = () => {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#7DB6DF",
-            borderRadius: "50px",
+            borderRadius: 90,
           }}
-          onPress={() => navigation.navigate("Add")}
+          onPress={() => navigation.navigate("AddScreen")}
         >
           <FontAwesome5 name="plus" size={20} color="white" />
         </TouchableOpacity>
       </View>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("ChartPage")}
       >
         <FontAwesome name="pie-chart" size={24} color="gray" />
       </TouchableOpacity>
       <TouchableOpacity
         style={{
-          flex: "1",
+          flex: 1,
           alignItems: "center",
         }}
         onPress={() => navigation.navigate("AccountSetting")}

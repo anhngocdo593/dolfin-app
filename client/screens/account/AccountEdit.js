@@ -1,15 +1,49 @@
 import React, { useState } from "react";
-import { View, Image, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import FooterS from "../../components/FooterS";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../../userSlice"; // Import the updateUser thunk
 
 const AccountEdit = (props) => {
   const navigation = useNavigation();
-  const [lastName, setLastName] = useState(props.lastName);
-  const [dob, setDob] = useState(props.dob);
-  const [job, setJob] = useState(props.job);
-  const [salary, setSalary] = useState(props.salary);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.data);
+
+  const [lastName, setLastName] = useState("");
+  const [dob, setDob] = useState("");
+  const [job, setJob] = useState("");
+  const [salary, setSalary] = useState("");
+
+  const handleSave = () => {
+    const userData = {
+      name: lastName,
+      job: job,
+      income: salary,
+      year: dob,
+    };
+    dispatch(updateUser(userData))
+      .unwrap()
+      .then(() => {
+        Alert.alert("Success", "User information updated successfully");
+
+        navigation.navigate("AccountSetting");
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Error",
+          error.message || "Failed to update user information"
+        );
+      });
+  };
 
   return (
     <View className="flex-1">
@@ -19,9 +53,7 @@ const AccountEdit = (props) => {
             className="w-[100px] h-[100px] mt-10 rounded-full"
             source={require("../../assets/pf.png")}
           />
-          <Text className="mt-2 w-full text-center text-black-400 text-base">
-            Sy{props.firstName} {props.lastName}Huynh
-          </Text>
+          <Text className="mt-2 w-full text-center text-black-400 text-base"></Text>
         </View>
 
         <View className="w-full bg-white rounded-lg shadow-lg p-4 mb-6 mt-8">
@@ -33,7 +65,12 @@ const AccountEdit = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Tên</Text>
-            <Text className="text-gray-800">{props.lastName}Sy</Text>
+            <TextInput
+              className="flex-1 text-gray-800"
+              placeholder="Nhập tên"
+              value={lastName}
+              onChangeText={setLastName}
+            />
           </View>
 
           <View className="flex-row items-center border-b border-gray-200 pb-2 mb-2">
@@ -44,7 +81,12 @@ const AccountEdit = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Năm sinh</Text>
-            <Text className="text-gray-800">{props.DOB} 2003</Text>
+            <TextInput
+              className="flex-1 text-gray-800"
+              placeholder="Nhập năm sinh"
+              value={dob}
+              onChangeText={setDob}
+            />
           </View>
 
           <View className="flex-row items-center border-b border-gray-200 pb-2 mb-2">
@@ -55,7 +97,12 @@ const AccountEdit = (props) => {
               className="mr-2"
             />
             <Text className="flex-1 text-gray-600 ml-1">Nghề nghiệp</Text>
-            <Text className="text-gray-800">Sinh viên</Text>
+            <TextInput
+              className="flex-1 text-gray-800"
+              placeholder="Nhập nghề nghiệp"
+              value={job}
+              onChangeText={setJob}
+            />
           </View>
 
           <View className="flex-row items-center pb-2">
@@ -79,7 +126,7 @@ const AccountEdit = (props) => {
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("AccountSetting")}
+          onPress={handleSave}
           className="w-24 h-12 bg-blue-100 rounded-lg justify-center items-center mt-10"
         >
           <Text className="text-blue-600 text-lg">Lưu</Text>
