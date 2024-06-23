@@ -1,23 +1,22 @@
 // TimeSelectComponent.js
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 const hours = Array.from({ length: 24 }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i }));
 const minutes = Array.from({ length: 60 }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i }));
 
-const TimeSelectComponent = ({selectedMinute, selectedHour, setSelectedHour, setSelectedMinute}) => {
-
+const TimeSelectComponent = ({ selectedMinute, selectedHour, setSelectedHour, setSelectedMinute }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Thời gian</Text>
+      <Text style={styles.label}>Chọn Thời Gian</Text>
       <View style={styles.pickerContainer}>
         <RNPickerSelect
           style={pickerSelectStyles}
           onValueChange={(value) => setSelectedHour(value)}
           items={hours}
           value={selectedHour}
-          placeholder={{}}
+          placeholder={{ label: 'Chọn giờ', value: null }}
         />
         <Text style={styles.separator}>:</Text>
         <RNPickerSelect
@@ -25,12 +24,9 @@ const TimeSelectComponent = ({selectedMinute, selectedHour, setSelectedHour, set
           onValueChange={(value) => setSelectedMinute(value)}
           items={minutes}
           value={selectedMinute}
-          placeholder={{}}
+          placeholder={{ label: 'Chọn phút', value: null }}
         />
       </View>
-      {/* <Text style={styles.selectedTime}>
-        Selected Time: {selectedHour.toString().padStart(2, '0')}:{selectedMinute.toString().padStart(2, '0')}
-      </Text> */}
     </View>
   );
 };
@@ -40,39 +36,47 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start',
+    marginVertical: 10,
   },
   label: {
     fontSize: 20,
     color: 'gray',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   pickerContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   separator: {
-    fontSize: 16,
+    fontSize: 20,
     marginHorizontal: 10,
     paddingVertical: 5,
-  },
-  selectedTime: {
-    marginTop: 20,
-    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: 16,
+    fontSize: 18,
     color: 'black',
-    paddingVertical: 5,
-    paddingHorizontal: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    width: 100,
+    textAlign: 'center',
   },
   inputAndroid: {
-    fontSize: 16,
+    fontSize: 18,
     color: 'black',
-    paddingVertical: 5,
-    paddingHorizontal: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    width: 100,
+    textAlign: 'center',
   },
 });
 

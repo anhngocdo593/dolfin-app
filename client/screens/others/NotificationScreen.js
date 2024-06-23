@@ -21,6 +21,11 @@ const notifications = [
     type: "alert",
     message: "Hãy cập nhật phiên bản mới nhất để sử dụng những tính năng mới",
   },
+  {
+    id: "3",
+    type: "info",
+    message: "Chào mừng bạn đến với Dolfin !",
+  },
 ];
 
 const NotificationScreen = () => {
@@ -32,7 +37,7 @@ const NotificationScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../../assets/dolphin.jpg")}
+      // source={require("../../assets/dolphin.jpg")}
       style={styles.backgroundImage}
     >
       <View style={{ flex: 1 }}>
@@ -42,8 +47,8 @@ const NotificationScreen = () => {
               alignSelf: "center",
               fontSize: 30,
               fontWeight: "bold",
-              color: "rgba(220, 38, 38, 1)",
             }}
+            className='text-blue-900'
           >
             Thông báo
           </Text>
@@ -57,7 +62,7 @@ const NotificationScreen = () => {
             data={filteredNotifications}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View style={styles.notificationItem}>
+              <View style={styles.notificationItem} className='border-gray-200 py-5'>
                 <Text style={styles.notificationIcon}>
                   {item.type === "info" ? "ℹ️" : "⚠️"}
                 </Text>
@@ -68,7 +73,7 @@ const NotificationScreen = () => {
             )}
           />
         </SafeAreaView>
-        <FooterS />
+        <FooterS selectedPage="NotificationScreen" />
       </View>
     </ImageBackground>
   );
@@ -96,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+   
   },
   notificationIcon: {
     fontSize: 24,

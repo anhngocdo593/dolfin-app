@@ -51,7 +51,7 @@ export default function App() {
         <Stack.Navigator>
           {isFirstLaunch ? (
             <>
-              <Stack.Screen
+               <Stack.Screen
                 name="O1"
                 component={Onboarding1}
                 options={{ headerShown: false }}
@@ -117,6 +117,7 @@ export default function App() {
                   component={NotificationScreen}
                   options={{ headerShown: false }}
                 />
+               
               </>
             </>
           ) : (

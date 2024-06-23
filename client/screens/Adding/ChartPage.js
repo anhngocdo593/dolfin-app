@@ -33,19 +33,20 @@ const months = [
 ];
 
 const categoryColors = {
-  food: "#FF6347", // Tomato
-  transport: "#4682B4", // SteelBlue
-  edu: "#32CD32", // LimeGreen
-  clothes: "#FFD700", // Gold
-  beauty: "#FF69B4", // HotPink
-  entertaining: "#8A2BE2", // BlueViolet
-  event: "#FF4500", // OrangeRed
+  food: "#FF9898",
+  transport: "#DDBC89",
+  edu: "#00ADB5",
+  clothes: "#5F64C0",
+  beauty: "#D77948",
+  entertaining: "#EEC9A6",
+  event: "#6078EA",
 };
 
 const ChartPage = () => {
   const handlePressItemEdit = (item) => {
-    Alert.alert("Description ", item.description);
+    Alert.alert("Description", item.description);
   };
+
   const [selectedMonth, setSelectedMonth] = useState("June");
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear().toString()
@@ -64,6 +65,10 @@ const ChartPage = () => {
       dispatch(fetchExpenses({ month: monthIndex, year, token }));
     }
   }, [selectedMonth, selectedYear, dispatch, token]);
+
+  useEffect(() => {
+    console.log("Expenses:", expenses);
+  }, [expenses]);
 
   const chartData = expenses ? expenses.map((item) => item.percentage) : [];
   const chartColors = expenses
@@ -136,33 +141,17 @@ const ChartPage = () => {
           <Text style={styles.loadingText}>Loading...</Text>
         ) : error ? (
           <Text style={styles.errorText}>Error: {error}</Text>
-        ) : expenses ? (
+        ) : expenses && expenses.length > 0 ? (
           <>
-            {totalPercentage > 0 ? (
-              <PieChart
-                widthAndHeight={200}
-                series={chartData}
-                sliceColor={chartColors}
-                coverRadius={0.45}
-                coverFill="#FFF"
-                style={{ alignSelf: "center", justifyContent: "center" }}
-              />
-            ) : (
-              <Text style={styles.noDataText}>
-                No data available for {selectedMonth} {selectedYear}
-              </Text>
-            )}
-            <Text
-              style={{
-                alignSelf: "center",
-                fontSize: 25,
-                fontWeight: "bold",
-                marginTop: 20,
-              }}
-            >
-              {" "}
-              Expenses List
-            </Text>
+            <PieChart
+              widthAndHeight={200}
+              series={chartData}
+              sliceColor={chartColors}
+              coverRadius={0.45}
+              coverFill="#FFF"
+              style={{ alignSelf: "center", justifyContent: "center" }}
+            />
+            <Text style={styles.expensesListHeader}>Expenses List</Text>
             <ExpenseList
               expensesdata={expenses}
               handlePressItemEdit={handlePressItemEdit}
@@ -170,11 +159,11 @@ const ChartPage = () => {
           </>
         ) : (
           <Text style={styles.noDataText}>
-            No data available for {selectedMonth}
+            No data available for {selectedMonth} {selectedYear}
           </Text>
         )}
       </SafeAreaView>
-      <FooterS />
+      <FooterS selectedPage="ChartPage" />
     </View>
   );
 };
@@ -244,6 +233,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "red",
     textAlign: "center",
+    marginTop: 20,
+  },
+  expensesListHeader: {
+    alignSelf: "center",
+    fontSize: 25,
+    fontWeight: "bold",
     marginTop: 20,
   },
 });

@@ -1,24 +1,26 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   View,
   Animated,
   Dimensions,
-  Alert,
+  ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CalendarComponent from "../../components/CalendarComponent";
 import ExpenseList from "../../components/ExpenseList";
 import { FontAwesome } from "@expo/vector-icons";
 import TvS from "../../components/TvS";
 import FooterS from "../../components/FooterS";
 import BottomPopup from "../../components/BottomPopup";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUser } from "../../userSlice";
 
 const DefaultPage = () => {
+  const dispatch = useDispatch();
   const [submenus, setSubmenus] = useState("Chi");
   const today = new Date();
   const [day, setDay] = useState(today.getDate());
@@ -28,141 +30,105 @@ const DefaultPage = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
-  const [expensesloading, setExpensesloading] = useState(true);
+  const [expensesLoading, setExpensesLoading] = useState(true);
   const popupHeight = useRef(new Animated.Value(0)).current;
   const { height } = Dimensions.get("window");
   const token = useSelector((state) => state.token);
-  const [expensesdata, setExpensesdata] = useState(null);
-  const [incomesdata, setIncomesdata] = useState(null);
+  const [expensesData, setExpensesData] = useState(null);
+  const [incomesData, setIncomesData] = useState(null);
   const [error, setError] = useState(null);
-  const [totalExpense, setTotalExpense] = useState(0)
-  const [totalIncome, setTotalIncome] = useState(0)
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
   const isFocused = useIsFocused();
+  const user = useSelector((state) => state.user.data);
+  const userStatus = useSelector((state) => state.user.status);
+  const userError = useSelector((state) => state.user.error);
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
+
   useEffect(() => {
     if (isFocused) {
-      console.log("Default Page");
-      setExpensesloading(true);
+      fetchData();
     }
-  }, [isFocused]);
-  useEffect(() => {
-    async function getExpenses(url) {
-      var list = [];
-      console.log(`fetching from ${url}`);
-      try {
-        const APIresponse = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!APIresponse.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await APIresponse.json();
-<<<<<<< HEAD
-        console.log('got data')
-        var totalEx = 0
-        data.forEach(element => {
-          var item = {_id: element._id, date: element.date, category: element.category, 
-            amount: element.amount, description: element.description, 
-            time: element.time, userID: element.userID};
-            totalEx += element.amount
-          list.push(item)
-        });
-        setTotalExpense(totalEx)
-        setExpensesdata(list)
-        setExpensesloading(false)
-=======
-        console.log("got data");
-        data.forEach((element) => {
-          var item = {
-            _id: element._id,
-            date: element.date,
-            category: element.category,
-            amount: element.amount,
-            description: element.description,
-            time: element.time,
-            userID: element.userID,
-          };
-          list.push(item);
-        });
-        setExpensesdata(list);
-        setExpensesloading(false);
-      } catch (error) {
-        setError(error.message);
-        throw new Error(error);
->>>>>>> 0658265aa17d369db86a49065296edb920223dc4
-      }
-      // return APIresponse.json();
-    }
-    async function getIncomes(url) {
-      var list = [];
-      console.log(`fetching from ${url}`);
-      try {
-        const APIresponse = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!APIresponse.ok) {
-          throw new Error("Failed to fetch incomes data");
-        }
-        const data = await APIresponse.json();
-<<<<<<< HEAD
-        console.log('got data')
-        var total = 0
-        data.forEach(element => {
-          var item = {_id: element._id, date: element.date, category: element.category, 
-            amount: element.amount, description: element.description, 
-            time: element.time, userID: element.userID};
-            total += element.amount
-          list.push(item)
-        });
-        setTotalIncome(total)
-        setIncomesdata(list)
-        setExpensesloading(false)
-=======
-        console.log("got data");
-        data.forEach((element) => {
-          var item = {
-            _id: element._id,
-            date: element.date,
-            category: element.category,
-            amount: element.amount,
-            description: element.description,
-            time: element.time,
-            userID: element.userID,
-            isScheduled: element.isScheduled,
-          };
-          list.push(item);
-        });
-        setIncomesdata(list);
-        setExpensesloading(false);
-      } catch (error) {
-        setError(error.message);
-        throw new Error(error);
->>>>>>> 0658265aa17d369db86a49065296edb920223dc4
-      }
-      // return APIresponse.json();
-    }
-    if (expensesloading) {
-      console.log("loading expense");
-      getExpenses(
-        `https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`
-      );
-      getIncomes(
-        `https://money-manager-ebon.vercel.app/incomes?day=${day}&month=${month}&year=${year}`
-      );
-      setExpensesloading(false);
-    }
-  });
+  }, [isFocused, day, month, year]);
 
-  const handlePressItemEdit = async (item) => {
+  const fetchData = useCallback(async () => {
+    setExpensesLoading(true);
+    try {
+      const [expenses, incomes] = await Promise.all([
+        getExpenses(
+          `https://money-manager-ebon.vercel.app/expenses?day=${day}&month=${month}&year=${year}`
+        ),
+        getIncomes(
+          `https://money-manager-ebon.vercel.app/incomes?day=${day}&month=${month}&year=${year}`
+        ),
+      ]);
+      setExpensesData(expenses.list);
+      setIncomesData(incomes.list);
+      setTotalExpense(expenses.total);
+      setTotalIncome(incomes.total);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setExpensesLoading(false);
+    }
+  }, [day, month, year, token]);
+
+  const getExpenses = async (url) => {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch expenses");
+    }
+    const data = await response.json();
+    const list = data.map((element) => ({
+      _id: element._id,
+      date: element.date,
+      category: element.category,
+      amount: element.amount,
+      description: element.description,
+      time: element.time,
+      userID: element.userID,
+    }));
+    const total = list.reduce((sum, item) => sum + item.amount, 0);
+    return { list, total };
+  };
+
+  const getIncomes = async (url) => {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch incomes");
+    }
+    const data = await response.json();
+    const list = data.map((element) => ({
+      _id: element._id,
+      date: element.date,
+      category: element.category,
+      amount: element.amount,
+      description: element.description,
+      time: element.time,
+      userID: element.userID,
+    }));
+    const total = list.reduce((sum, item) => sum + item.amount, 0);
+    return { list, total };
+  };
+
+  const handlePressItemEdit = (item) => {
     setEditItem(item);
-    console.log(`Editing ${item.category}`);
     openPopup();
   };
+
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
   };
@@ -170,78 +136,51 @@ const DefaultPage = () => {
   const handleChiPress = () => {
     setSubmenus("Chi");
   };
+
   const handleThuPress = () => {
     setSubmenus("Thu");
   };
+
   const openPopup = () => {
     setIsVisiblePopup(true);
     Animated.timing(popupHeight, {
-      toValue: height * 0.5, // Adjust the popup height as needed
+      toValue: height * 0.5,
       duration: 300,
       useNativeDriver: false,
     }).start();
   };
+
   const closePopup = () => {
     Animated.timing(popupHeight, {
       toValue: 0,
       duration: 300,
       useNativeDriver: false,
     }).start(() => setIsVisiblePopup(false));
-    setExpensesloading(true);
+    fetchData();
   };
-  // const expenses = [
-  //   {
-  //     _id: "1",
-  //     category: "transport",
-  //     amount: 300000,
-  //   },
-  //   {
-  //     _id: "2",
-  //     category: "clothing",
-  //     amount: 400000,
-  //   },
-  //   {
-  //     _id: "3",
-  //     category: "food",
-  //     amount: 100000,
-  //   },
-  //   {
-  //     _id: "4",
-  //     category: "utilities",
-  //     amount: 300000,
-  //   },
-  // ];
+
   const handleDayPress = (date) => {
     const selectedDate = new Date(date);
     setDay(selectedDate.getUTCDate());
     setMonth(selectedDate.getUTCMonth() + 1);
     setYear(selectedDate.getUTCFullYear());
     setSelectedDate(date);
-    setExpensesloading(true);
-    console.log(day, "  ", month, "    ", year);
+    setExpensesLoading(true);
   };
 
+  const finalIncome = totalIncome + (parseInt(user.income) || 0);
+
   return (
-    <View style={{ flex: 1, flexGrow: 1 }}>
+    <View style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            marginBottom: 20,
-            marginLeft: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
+        <Text style={styles.header}>
           {day}/{month}/{year}
           <TouchableOpacity onPress={toggleCalendar}>
-            {showCalendar && (
-              <FontAwesome name="arrow-up" size={24} className="ml-10" />
-            )}
-            {!showCalendar && (
-              <FontAwesome name="arrow-down" size={24} className="ml-10" />
-            )}
+            <FontAwesome
+              name={showCalendar ? "arrow-up" : "arrow-down"}
+              size={24}
+              style={styles.icon}
+            />
           </TouchableOpacity>
         </Text>
         {showCalendar && (
@@ -250,71 +189,45 @@ const DefaultPage = () => {
             onDateChange={handleDayPress}
           />
         )}
-<<<<<<< HEAD
-        {!showCalendar && <TvS totalExpense={totalExpense} totalIncome={totalIncome} day={day} month={month} year={year}></TvS>}
-        
-        <View style={styles.containerSubmenu}>
-            <View>
-              <TouchableOpacity
-                onPress={handleChiPress}
-                style={[
-                  styles.button,
-                  submenus === "Chi" && styles.selectedButton,
-                ]}
-              >
-                <Text style={{ fontSize: 24 }}>Chi tiêu</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.container}>
-              <TouchableOpacity
-                onPress={handleThuPress}
-                style={[
-                  styles.button,
-                  submenus === "Thu" && styles.selectedButton,
-                ]}
-              >
-                <Text style={{ fontSize: 24 }}>Thu nhập</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-=======
-        {!showCalendar && <TvS day={day} month={month} year={year}></TvS>}
->>>>>>> 0658265aa17d369db86a49065296edb920223dc4
+        {!showCalendar && (
+          <TvS
+            totalExpense={totalExpense}
+            totalIncome={finalIncome}
+            day={day}
+            month={month}
+            year={year}
+          />
+        )}
 
         <View style={styles.containerSubmenu}>
-          <View>
-            <TouchableOpacity
-              onPress={handleChiPress}
-              style={[
-                styles.button,
-                submenus === "Chi" && styles.selectedButton,
-              ]}
-            >
-              <Text style={{ fontSize: 24 }}>Chi tiêu</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.container}>
-            <TouchableOpacity
-              onPress={handleThuPress}
-              style={[
-                styles.button,
-                submenus === "Thu" && styles.selectedButton,
-              ]}
-            >
-              <Text style={{ fontSize: 24 }}>Thu nhập</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={handleChiPress}
+            style={[styles.button, submenus === "Chi" && styles.selectedButton]}
+          >
+            <Text style={styles.buttonText}>Chi tiêu</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleThuPress}
+            style={[styles.button, submenus === "Thu" && styles.selectedButton]}
+          >
+            <Text style={styles.buttonText}>Thu nhập</Text>
+          </TouchableOpacity>
         </View>
 
-        <ExpenseList
-          expensesdata={submenus === "Chi" ? expensesdata : incomesdata}
-          handlePressItemEdit={handlePressItemEdit}
-          expensesloading={expensesloading}
-          setExpensesloading={setExpensesloading}
-          day={day}
-          month={month}
-          year={year}
-        />
+        {expensesLoading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <ExpenseList
+            expensesdata={submenus === "Chi" ? expensesData : incomesData}
+            handlePressItemEdit={handlePressItemEdit}
+            expensesLoading={expensesLoading}
+            setExpensesLoading={setExpensesLoading}
+            day={day}
+            month={month}
+            year={year}
+          />
+        )}
+
         {isVisiblePopup && (
           <BottomPopup
             isVisiblePopup={isVisiblePopup}
@@ -324,10 +237,10 @@ const DefaultPage = () => {
             item={editItem}
             token={token}
             type={submenus === "Chi" ? "expenses" : "incomes"}
-          ></BottomPopup>
+          />
         )}
       </SafeAreaView>
-      <FooterS></FooterS>
+      <FooterS selectedPage="DefaultPage" />
     </View>
   );
 };
@@ -335,100 +248,31 @@ const DefaultPage = () => {
 export default DefaultPage;
 
 const styles = StyleSheet.create({
-  imageBackground: {
-    flex: 1,
-    height: "auto",
-    marginTop: 20,
-    flexGrow: 1,
-  },
-
-  scrollViewContent: {
-    flexGrow: 1,
-  },
-  contentall: {
-    gap: 10,
-  },
-  contentReturn: {
-    flex: 1,
-    alignItems: "left",
-    width: "100%",
-    borderColor: "#cccccc",
-    borderWidth: 1,
-    borderRadius: 5,
-  },
-  contentNote: {
-    flex: 1,
-    alignItems: "left",
-    width: "95%",
-    alignSelf: "center",
-  },
-  containerTime: {
-    flex: 1,
-    alignItems: "left",
-    width: "95%",
-    alignSelf: "center",
-  },
-  containerDay: {
-    flex: 1,
-    alignItems: "left",
-    width: "95%",
-    alignSelf: "center",
-  },
-  text: {
+  header: {
     fontSize: 24,
-    marginBottom: 10,
+    fontWeight: "bold",
+    marginBottom: 20,
+    marginLeft: 10,
+    flexDirection: "row",
+    alignItems: "center",
   },
-  notesText: {
-    fontSize: 18,
-    color: "#333333",
-  },
-  button: {
-    marginHorizontal: 10,
-    paddingBottom: 10,
+  icon: {
+    marginLeft: 10,
   },
   containerSubmenu: {
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
   },
+  button: {
+    marginHorizontal: 10,
+    paddingBottom: 10,
+  },
   selectedButton: {
     borderBottomWidth: 2,
     borderBottomColor: "black",
   },
-  rectangle: {
-    width: "100%", // Split the screen in half horizontally
-    height: 10, // Full height
-    backgroundColor: "lightgray",
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  dropdown: {
-    backgroundColor: "#E9F5FD",
-    padding: 10,
-    borderRadius: 5,
-    width: "100%",
-    gap: 10,
-  },
-  dropdownItem: {
-    padding: 10,
-    alignSelf: "center",
-  },
-  numberInput: {},
-  saveButtonContainer: {
-    bottom: 20,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  saveButtonText: {
-    color: "white",
-  },
-  bottomScreen: {
-    flexDirection: "row",
-    marginHorizontal: 20,
-    justifyContent: "space-evenly",
+  buttonText: {
+    fontSize: 24,
   },
 });

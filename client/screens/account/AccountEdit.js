@@ -51,9 +51,11 @@ const AccountEdit = (props) => {
         <View className="bg-[#7DB6DF] w-full h-1/3 border rounded-3xl items-center justify-center">
           <Image
             className="w-[100px] h-[100px] mt-10 rounded-full"
-            source={require("../../assets/pf.png")}
+            source={{
+              uri: "https://i.pinimg.com/originals/ff/a0/9a/ffa09aec412db3f54deadf1b3781de2a.png",
+            }}
           />
-          <Text className="mt-2 w-full text-center text-black-400 text-base"></Text>
+          <Text className="mt-2 w-full text-center text-white font-bold text-2xl"></Text>
         </View>
 
         <View className="w-full bg-white rounded-lg shadow-lg p-4 mb-6 mt-8">
@@ -70,6 +72,7 @@ const AccountEdit = (props) => {
               placeholder="Nhập tên"
               value={lastName}
               onChangeText={setLastName}
+              returnKeyType="done"
             />
           </View>
 
@@ -86,6 +89,7 @@ const AccountEdit = (props) => {
               placeholder="Nhập năm sinh"
               value={dob}
               onChangeText={setDob}
+              returnKeyType="done"
             />
           </View>
 
@@ -102,6 +106,7 @@ const AccountEdit = (props) => {
               placeholder="Nhập nghề nghiệp"
               value={job}
               onChangeText={setJob}
+              returnKeyType="done"
             />
           </View>
 
@@ -121,6 +126,7 @@ const AccountEdit = (props) => {
               value={salary}
               onChangeText={setSalary}
               keyboardType="numeric"
+              returnKeyType="done"
             />
           </View>
         </View>
@@ -129,10 +135,10 @@ const AccountEdit = (props) => {
           onPress={handleSave}
           className="w-24 h-12 bg-blue-100 rounded-lg justify-center items-center mt-10"
         >
-          <Text className="text-blue-600 text-lg">Lưu</Text>
+          <Text className="text-green-600 text-lg">Lưu</Text>
         </TouchableOpacity>
       </View>
-      <FooterS />
+      <FooterS selectedPage="AccountSetting" />
     </View>
   );
 };

@@ -7,14 +7,17 @@ const TvS = ({totalExpense, totalIncome, day, month, year}) => {
       style={{
         padding: 20,
       }}
+      className='border-b mb-5 border-gray-300'
     >
       <View style={styles.rowTvS}>
-        <Text style={[styles.columnTvS, {color:'green'}]}>Tổng Chi phí</Text>
-        <Text style={[styles.columnTvS, {color:'red'}]}>Tổng Thu nhập</Text>
+        <Text style={[styles.columnTvS, {color:'gray'}]} className='text-lg'>Tổng Chi phí</Text>
+        <Text style={[styles.columnTvS, {color:'gray'}]} className='text-lg'>Tổng Thu nhập</Text>
+        <Text style={[styles.columnTvS, {color:'gray'}]} className='text-lg'>Số dư</Text>
       </View>
       <View style={styles.rowTvS}>
         <Text style={styles.value}>{totalExpense}</Text>
         <Text style={styles.value}>{totalIncome}</Text>
+        <Text style={styles.value}>{remain}</Text>
       </View>
     </View>
   );
